@@ -2,9 +2,9 @@
     "name": "electromart-backend",
     "version": "1.0.0",
     "description": "ElectroMart online backend server",
-    "main": "server.js",
+    "main": "server/server.js",
     "scripts": {
-      "start": "node server.js",
+      "start": "node server/server.js",
       "dev": "nodemon server.js"
     },
     "keywords": [],
