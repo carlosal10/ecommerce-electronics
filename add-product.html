@@ -46,6 +46,20 @@
         <textarea name="description" rows="4" required></textarea>
       </div>
 
+      <div class="form-group">
+        <label>Category</label>
+        <select name="category" id="categorySelect" required>
+          <option value="">Select Category</option>
+        </select>
+        <small>Or create new:</small>
+        <input type="text" id="newCategoryInput" placeholder="New category (optional)" />
+      </div>
+
+      <div class="form-group">
+        <label>Upload Product Photo</label>
+        <input type="file" name="photo" accept="image/*" required />
+      </div>
+
       <button type="submit" class="btn-red">Add Product</button>
     </form>
   </section>
