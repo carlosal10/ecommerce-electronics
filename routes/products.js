@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const Product = require('../models/Product');
-const Category = require('../models/categories');
 
 // File storage setup
 const storage = multer.diskStorage({
@@ -27,16 +26,8 @@ router.post('/', upload.single('photo'), async (req, res) => {
       price,
       stock,
       features,
-      description,
-      category
+      description
     } = req.body;
-
-    // Optional: Check if category exists; if not, create it
-    let existingCategory = await Category.findOne({ name: category });
-    if (!existingCategory) {
-      existingCategory = new Category({ name: category });
-      await existingCategory.save();
-    }
 
     const photoPath = req.file ? req.file.path : null;
 
@@ -46,7 +37,6 @@ router.post('/', upload.single('photo'), async (req, res) => {
       stock,
       features,
       description,
-      category: existingCategory.name,
       photo: photoPath
     });
 

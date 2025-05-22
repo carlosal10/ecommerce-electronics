@@ -35,38 +35,3 @@ document.getElementById("addProductForm").addEventListener("submit", async funct
     alert("Failed to connect to server");
   }
 });
-
-async function loadCategories() {
-  try {
-    const res = await fetch("https://ecommerce-electronics-0j4e.onrender.com/api/categories");
-    const categories = await res.json();
-    const select = document.getElementById("categorySelect");
-    select.innerHTML = `<option value="">-- Select Category --</option>`; // Reset
-
-    categories.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat.name;
-      option.textContent = cat.name;
-      select.appendChild(option);
-    });
-  } catch (err) {
-    console.error("Failed to load categories", err);
-  }
-}
-
-async function createNewCategory(name) {
-  try {
-    const res = await fetch("https://ecommerce-electronics-0j4e.onrender.com/api/categories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      console.error("Category create failed:", err.error);
-    }
-  } catch (err) {
-    console.error("Error creating category:", err);
-  }
-}
