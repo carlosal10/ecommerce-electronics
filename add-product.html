@@ -73,58 +73,48 @@
   </section>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("addProductForm");
-    const photoInput = document.getElementById("photoInput");
-    const previewImage = document.getElementById("previewImage");
-    const categoryForm = document.getElementById("addCategoryForm");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("addProductForm");
+  const photoInput = document.getElementById("photoInput");
+  const previewImage = document.getElementById("previewImage");
 
-    photoInput.addEventListener("change", function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          previewImage.src = e.target.result;
-          previewImage.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+  photoInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImage.src = e.target.result;
+        previewImage.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("https://your-api-url.com/api/products", {
+        method: "POST",
+        body: formData,
+      });
+
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        const errData = contentType?.includes("application/json") ? await res.json() : await res.text();
+        throw new Error(errData.error || errData || "Unknown server error");
       }
-    });
 
-    form.addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-
-      try {
-        const res = await fetch("https://ecommerce-electronics-0j4e.onrender.com/api/products", {
-          method: "POST",
-          body: formData
-        });
-
-        const contentType = res.headers.get("content-type");
-
-        if (!res.ok) {
-          let errorMessage = "Unknown error";
-          if (contentType && contentType.includes("application/json")) {
-            const errorData = await res.json();
-            errorMessage = errorData.error || JSON.stringify(errorData);
-          } else {
-            const errorText = await res.text();
-            errorMessage = "Server responded with HTML: " + errorText.slice(0, 200);
-          }
-          throw new Error(errorMessage);
-        }
-
-        const result = await res.json();
-        alert("Product successfully added!");
-        form.reset();
-        previewImage.style.display = 'none';
-
-      } catch (error) {
-        console.error("Submission failed:", error);
-        alert("Failed to submit product:\n" + error.message);
-      }
-    });
+      const data = await res.json();
+      alert("Product added!");
+      form.reset();
+      previewImage.style.display = "none";
+    } catch (error) {
+      console.error("Failed:", error);
+      alert("Error: " + error.message);
+    }
+  });
 
 
   categoryForm.addEventListener("submit", async function(e) {

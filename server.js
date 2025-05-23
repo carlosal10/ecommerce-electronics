@@ -11,6 +11,7 @@ app.use(express.json());
 
 app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', categoryRoutes);
+app.use("/uploads", express.static("uploads")); // Serve static images
 
 
 mongoose.connect(process.env.MONGO_URI)
