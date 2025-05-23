@@ -18,20 +18,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// POST /api/products route
 router.post('/', upload.single('photo'), async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const { name, price, stock, features, description } = req.body;
-    const photoPath = req.file ? req.file.path : null;
 
     if (!name || !price || !stock || !features || !description) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
+    const photoPath = req.file?.path || null;
+
     const product = new Product({
       name,
-      price,
-      stock,
+      price: Number(price),
+      stock: Number(stock),
       features,
       description,
       photo: photoPath
@@ -41,9 +44,10 @@ router.post('/', upload.single('photo'), async (req, res) => {
 
     res.status(201).json({ message: "Product successfully added", product });
   } catch (error) {
-    console.error("Error saving product:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Error saving product:", error);
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 });
+
 
 module.exports = router;
