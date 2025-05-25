@@ -49,7 +49,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
 
 
 // GET all products
-router.get('/products', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
     
@@ -74,7 +74,7 @@ router.get('/products', async (req, res) => {
 });
 
 // GET all categories
-router.get('/categories', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const categories = await Category.find();
     res.json(categories);
