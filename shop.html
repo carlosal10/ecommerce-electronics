@@ -57,7 +57,7 @@
     <p>&copy; 2025 ElectroMart. All rights reserved.</p>
   </footer>
 
- <script>
+<script>
   const API_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/products";
   const productGrid = document.getElementById("productGrid");
   const categoryFilter = document.getElementById("categoryFilter");
@@ -87,10 +87,12 @@
     }
 
     products.forEach(product => {
+      const imageUrl = product.photo
+        ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`
+        : 'placeholder.jpg';
+
       const card = document.createElement("div");
       card.className = "product-card";
-      const imageUrl = `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`;
-
       card.innerHTML = `
         <div class="product-img">
           <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
@@ -119,7 +121,6 @@
     renderProducts(filtered);
   }
 
-  // Event Listeners
   categoryFilter.addEventListener("change", applyFilters);
   brandFilter.addEventListener("change", applyFilters);
   priceFilter.addEventListener("input", () => {
@@ -127,9 +128,9 @@
     applyFilters();
   });
 
-  // Initial Fetch
   fetchProducts();
 </script>
+
 
 </body>
 </html>
