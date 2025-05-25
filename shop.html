@@ -88,8 +88,9 @@
 
     products.forEach(product => {
       const imageUrl = product.photo
-        ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`
-        : 'placeholder.jpg';
+  ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`
+  : 'https://via.placeholder.com/150x150?text=No+Image';
+
 
       const card = document.createElement("div");
       card.className = "product-card";
