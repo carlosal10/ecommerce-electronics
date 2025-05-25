@@ -116,6 +116,26 @@
 
       renderProducts(filtered);
     }
+function displayProducts(products) {
+  const productGrid = document.querySelector('.product-grid');
+  productGrid.innerHTML = '';
+
+  products.forEach(product => {
+    const productCard = document.createElement('div');
+    productCard.classList.add('product-card');
+
+    const imageUrl = `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`;
+
+    productCard.innerHTML = `
+      <img src="${imageUrl}" alt="${product.name}" class="product-img" />
+      <h3>${product.name}</h3>
+      <p>$${product.price}</p>
+      <button class="btn-red">Add to Cart</button>
+    `;
+
+    productGrid.appendChild(productCard);
+  });
+}
 
     // Event Listeners
     categoryFilter.addEventListener("change", applyFilters);
