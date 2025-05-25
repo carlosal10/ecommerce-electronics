@@ -57,65 +57,29 @@
     <p>&copy; 2025 ElectroMart. All rights reserved.</p>
   </footer>
 
-  <script>
-    const API_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/products";
-    const productGrid = document.getElementById("productGrid");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const brandFilter = document.getElementById("brandFilter");
-    const priceFilter = document.getElementById("priceFilter");
-    const priceValue = document.getElementById("priceValue");
+ // shop.js
 
-    let allProducts = [];
+// Backend base URL
+const BASE_URL = 'https://ecommerce-electronics-0j4e.onrender.com';
 
-    async function fetchProducts() {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error("Failed to fetch products.");
-        allProducts = await response.json();
-        renderProducts(allProducts);
-      } catch (error) {
-        productGrid.innerHTML = `<p class="error">Error loading products. Please try again later.</p>`;
-        console.error(error);
+// Fetch and display all products on page load
+document.addEventListener('DOMContentLoaded', () => {
+  fetch(`${BASE_URL}/api/products`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
       }
-    }
+      return response.json();
+    })
+    .then(products => {
+      displayProducts(products);
+    })
+    .catch(error => {
+      console.error('Error loading products:', error);
+    });
+});
 
-    function renderProducts(products) {
-      productGrid.innerHTML = "";
-      if (products.length === 0) {
-        productGrid.innerHTML = `<p>No products found.</p>`;
-        return;
-      }
-
-      products.forEach(product => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
-          <div class="product-img">
-            <img src="${product.photoUrl || 'placeholder.jpg'}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
-          </div>
-          <h3>${product.name}</h3>
-          <p>$${product.price}</p>
-          <button class="btn-red">Add to Cart</button>
-        `;
-        productGrid.appendChild(card);
-      });
-    }
-
-    function applyFilters() {
-      const category = categoryFilter.value;
-      const brand = brandFilter.value;
-      const maxPrice = parseFloat(priceFilter.value);
-
-      const filtered = allProducts.filter(product => {
-        return (
-          (category === "" || product.category === category) &&
-          (brand === "" || product.brand === brand) &&
-          (isNaN(maxPrice) || product.price <= maxPrice)
-        );
-      });
-
-      renderProducts(filtered);
-    }
+// Function to display products
 function displayProducts(products) {
   const productGrid = document.querySelector('.product-grid');
   productGrid.innerHTML = '';
@@ -124,7 +88,7 @@ function displayProducts(products) {
     const productCard = document.createElement('div');
     productCard.classList.add('product-card');
 
-    const imageUrl = `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`;
+    const imageUrl = `${BASE_URL}${product.photo}`;
 
     productCard.innerHTML = `
       <img src="${imageUrl}" alt="${product.name}" class="product-img" />
@@ -137,16 +101,5 @@ function displayProducts(products) {
   });
 }
 
-    // Event Listeners
-    categoryFilter.addEventListener("change", applyFilters);
-    brandFilter.addEventListener("change", applyFilters);
-    priceFilter.addEventListener("input", () => {
-      priceValue.textContent = priceFilter.value;
-      applyFilters();
-    });
-
-    // Initial Fetch
-    fetchProducts();
-  </script>
 </body>
 </html>
