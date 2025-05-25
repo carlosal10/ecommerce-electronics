@@ -48,30 +48,27 @@ router.post("/", upload.single("photo"), async (req, res) => {
 });
 
 
-// GET all products
+const BASE_URL = "https://ecommerce-electronics-0j4e.onrender.com";
+
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
-    
-    // Add proper photo URL
-    const BASE_URL = process.env.BASE_URL || "https://ecommerce-electronics-0j4e.onrender.com";
-    const updatedProducts = products.map(product => {
-      const obj = product.toObject();
-      if (obj.photo) {
-        const fileName = obj.photo.split('/').pop();
-        obj.photoUrl = `${BASE_URL}/uploads/${fileName}`;
-      } else {
-        obj.photoUrl = null;
-      }
-      return obj;
+
+    const formattedProducts = products.map(product => {
+      const p = product.toObject();
+      // Remove the server absolute path and prepend BASE_URL/uploads
+      const filename = p.photo.split('/uploads/')[1]; // get only filename after /uploads/
+      p.photoUrl = `${BASE_URL}/uploads/${filename}`;
+      return p;
     });
 
-    res.json(updatedProducts);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server Error' });
+    res.json(formattedProducts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // GET all categories
 router.get('/', async (req, res) => {
