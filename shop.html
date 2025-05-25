@@ -22,102 +22,111 @@
     <aside class="filters">
       <h3>Filters</h3>
       <div class="filter-group">
-        <label>Category</label>
-        <select>
-          <option>All</option>
-          <option>Phones</option>
-          <option>Laptops</option>
-          <option>Accessories</option>
+        <label for="categoryFilter">Category</label>
+        <select id="categoryFilter">
+          <option value="">All</option>
+          <option value="Phones">Phones</option>
+          <option value="Laptops">Laptops</option>
+          <option value="Accessories">Accessories</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Brand</label>
-        <select>
-          <option>All</option>
-          <option>Samsung</option>
-          <option>Apple</option>
-          <option>Dell</option>
+        <label for="brandFilter">Brand</label>
+        <select id="brandFilter">
+          <option value="">All</option>
+          <option value="Samsung">Samsung</option>
+          <option value="Apple">Apple</option>
+          <option value="Dell">Dell</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Price</label>
-        <input type="range" min="0" max="1000" />
+        <label for="priceFilter">Max Price: <span id="priceValue">1000</span></label>
+        <input type="range" id="priceFilter" min="0" max="1000" value="1000" />
       </div>
     </aside>
 
     <section class="products">
       <h2>All Products</h2>
-      <div class="product-grid">
-        <div class="product-card">
-          <div class="product-img"></div>
-          <h3>Phone X</h3>
-          <p>$499</p>
-          <button class="btn-red">Add to Cart</button>
-        </div>
-        <div class="product-card">
-          <div class="product-img"></div>
-          <h3>Laptop Pro</h3>
-          <p>$899</p>
-          <button class="btn-red">Add to Cart</button>
-        </div>
-        <div class="product-card">
-          <div class="product-img"></div>
-          <h3>Wireless Earbuds</h3>
-          <p>$149</p>
-          <button class="btn-red">Add to Cart</button>
-        </div>
+      <div class="product-grid" id="productGrid">
+        <p>Loading products...</p>
       </div>
     </section>
-    <section class="products">
-        <h2>All Products</h2>
-        <div class="product-grid">
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Phone X</h3>
-            <p>$499</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Laptop Pro</h3>
-            <p>$899</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Wireless Earbuds</h3>
-            <p>$149</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-        </div>
-      </section>
-      <section class="products">
-        <h2>All Products</h2>
-        <div class="product-grid">
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Phone X</h3>
-            <p>$499</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Laptop Pro</h3>
-            <p>$899</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-          <div class="product-card">
-            <div class="product-img"></div>
-            <h3>Wireless Earbuds</h3>
-            <p>$149</p>
-            <button class="btn-red">Add to Cart</button>
-          </div>
-        </div>
-      </section>
   </main>
 
   <footer class="footer">
     <p>&copy; 2025 ElectroMart. All rights reserved.</p>
   </footer>
+
+  <script>
+    const API_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/products";
+    const productGrid = document.getElementById("productGrid");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const brandFilter = document.getElementById("brandFilter");
+    const priceFilter = document.getElementById("priceFilter");
+    const priceValue = document.getElementById("priceValue");
+
+    let allProducts = [];
+
+    async function fetchProducts() {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Failed to fetch products.");
+        allProducts = await response.json();
+        renderProducts(allProducts);
+      } catch (error) {
+        productGrid.innerHTML = `<p class="error">Error loading products. Please try again later.</p>`;
+        console.error(error);
+      }
+    }
+
+    function renderProducts(products) {
+      productGrid.innerHTML = "";
+      if (products.length === 0) {
+        productGrid.innerHTML = `<p>No products found.</p>`;
+        return;
+      }
+
+      products.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <div class="product-img">
+            <img src="${product.photoUrl || 'placeholder.jpg'}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
+          </div>
+          <h3>${product.name}</h3>
+          <p>$${product.price}</p>
+          <button class="btn-red">Add to Cart</button>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    function applyFilters() {
+      const category = categoryFilter.value;
+      const brand = brandFilter.value;
+      const maxPrice = parseFloat(priceFilter.value);
+
+      const filtered = allProducts.filter(product => {
+        return (
+          (category === "" || product.category === category) &&
+          (brand === "" || product.brand === brand) &&
+          (isNaN(maxPrice) || product.price <= maxPrice)
+        );
+      });
+
+      renderProducts(filtered);
+    }
+
+    // Event Listeners
+    categoryFilter.addEventListener("change", applyFilters);
+    brandFilter.addEventListener("change", applyFilters);
+    priceFilter.addEventListener("input", () => {
+      priceValue.textContent = priceFilter.value;
+      applyFilters();
+    });
+
+    // Initial Fetch
+    fetchProducts();
+  </script>
 </body>
 </html>
