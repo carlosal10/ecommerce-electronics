@@ -48,18 +48,33 @@ router.post("/", upload.single("photo"), async (req, res) => {
 });
 
 
-// Get all products
-router.get('/', async (req, res) => {
+// GET all products
+router.get('/products', async (req, res) => {
   try {
     const products = await Product.find();
-    res.json(products);
+    
+    // Add proper photo URL
+    const BASE_URL = process.env.BASE_URL || "https://ecommerce-electronics-0j4e.onrender.com";
+    const updatedProducts = products.map(product => {
+      const obj = product.toObject();
+      if (obj.photo) {
+        const fileName = obj.photo.split('/').pop();
+        obj.photoUrl = `${BASE_URL}/uploads/${fileName}`;
+      } else {
+        obj.photoUrl = null;
+      }
+      return obj;
+    });
+
+    res.json(updatedProducts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server Error' });
   }
 });
 
-router.get('/', async (req, res) => {
+// GET all categories
+router.get('/categories', async (req, res) => {
   try {
     const categories = await Category.find();
     res.json(categories);
@@ -67,5 +82,4 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 });
-
 module.exports = router;
