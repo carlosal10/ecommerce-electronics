@@ -96,7 +96,8 @@
       card.className = "product-card";
       card.innerHTML = `
         <div class="product-img">
-          <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
+         <img src="${product.photoUrl || 'placeholder.jpg'}" alt="${product.name}"
+ style="max-width: 100%; border-radius: 8px;"/>
         </div>
         <h3>${product.name}</h3>
         <p>$${product.price}</p>
