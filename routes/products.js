@@ -50,15 +50,15 @@ router.post("/", upload.single("photo"), async (req, res) => {
 
 const BASE_URL = "https://ecommerce-electronics-0j4e.onrender.com";
 
+// For products
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
 
     const formattedProducts = products.map(product => {
       const p = product.toObject();
-      // Remove the server absolute path and prepend BASE_URL/uploads
-      const filename = p.photo.split('/uploads/')[1]; // get only filename after /uploads/
-      p.photoUrl = `${BASE_URL}/uploads/${filename}`;
+      const filename = p.photo?.split('/uploads/')[1]; // Safe check
+      p.photoUrl = filename ? `${BASE_URL}/uploads/${filename}` : null;
       return p;
     });
 
@@ -69,9 +69,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-
-// GET all categories
-router.get('/', async (req, res) => {
+// For categories (adjust if you have Category model)
+router.get('/categories', async (req, res) => {
   try {
     const categories = await Category.find();
     res.json(categories);
@@ -79,4 +78,5 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 });
+
 module.exports = router;
