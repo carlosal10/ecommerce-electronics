@@ -60,6 +60,7 @@
 <script>
   const API_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/products";
   const CATEGORIES_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/categories";
+  
   const productGrid = document.getElementById("productGrid");
   const categoryFilter = document.getElementById("categoryFilter");
   const brandFilter = document.getElementById("brandFilter");
@@ -88,17 +89,14 @@
     }
 
     products.forEach(product => {
-      const imageUrl = product.photo
-  ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}`
-  : 'https://via.placeholder.com/150x150?text=No+Image';
-
+      const imageUrl = product.photoUrl || 
+        (product.photo ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}` : 'https://via.placeholder.com/150x150?text=No+Image');
 
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
         <div class="product-img">
-         <img src="${BASE_URL}${product.photo}" alt="${product.name}"
- style="max-width: 100%; border-radius: 8px;"/>
+          <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;" />
         </div>
         <h3>${product.name}</h3>
         <p>Ksh ${product.price}</p>
@@ -133,6 +131,7 @@
 
   fetchProducts();
 </script>
+
 
 
 </body>
