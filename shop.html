@@ -86,12 +86,12 @@
     }
 
     products.forEach(product => {
-      const imageUrl = product.photoUrl || 'https://via.placeholder.com/150x150?text=No+Image';
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
         <div class="product-img">
-          <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
+          <img src="${product.photoUrl || 'https://via.placeholder.com/150x150?text=No+Image'}" alt="${product.name}"
+          style="max-width: 100%; border-radius: 8px;"/>
         </div>
         <h3>${product.name}</h3>
         <p>Ksh ${product.price}</p>
@@ -102,9 +102,9 @@
   }
 
   function applyFilters() {
-    const category = categoryFilter.value;
-    const brand = brandFilter.value;
-    const maxPrice = parseFloat(priceFilter.value);
+    const category = categoryFilter ? categoryFilter.value : "";
+    const brand = brandFilter ? brandFilter.value : "";
+    const maxPrice = priceFilter ? parseFloat(priceFilter.value) : NaN;
 
     const filtered = allProducts.filter(product => {
       return (
@@ -117,14 +117,17 @@
     renderProducts(filtered);
   }
 
-  categoryFilter.addEventListener("change", applyFilters);
-  brandFilter.addEventListener("change", applyFilters);
-  priceFilter.addEventListener("input", () => {
-    priceValue.textContent = priceFilter.value;
-    applyFilters();
-  });
+  if (categoryFilter) categoryFilter.addEventListener("change", applyFilters);
+  if (brandFilter) brandFilter.addEventListener("change", applyFilters);
+  if (priceFilter) {
+    priceFilter.addEventListener("input", () => {
+      priceValue.textContent = priceFilter.value;
+      applyFilters();
+    });
+  }
 
   fetchProducts();
 </script>
+
 </body>
 </html>
