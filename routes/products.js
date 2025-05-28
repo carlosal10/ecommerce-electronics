@@ -21,6 +21,31 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // routes/products.js
+// Product creation route
+router.post("/", upload.single("photo"), async (req, res) => {
+  try {
+    const { name, price, stock, features, description } = req.body;
+
+    if (!name || !price || !stock || !features || !description) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const product = new Product({
+      name,
+      price: Number(price),
+      stock: Number(stock),
+      features,
+      description,
+      photo: req.file ? req.file.path.replace(/\\/g, "/") : null, // Use forward slashes for URLs
+    });
+
+    await product.save();
+    res.status(201).json({ message: "Product created", product });
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ error: error.message || "Internal server error" });
+  }
+});
 
 const BASE_URL = "https://ecommerce-electronics-0j4e.onrender.com";
 
