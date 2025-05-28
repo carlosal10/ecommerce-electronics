@@ -1,66 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ElectroMart | Shop</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="shop.css" />
-</head>
-<body>
-  <header class="navbar">
-    <div class="logo">ElectroMart</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="shop.html" class="active">Shop</a>
-      <a href="cart.html">Cart</a>
-      <a href="login.html">Login</a>
-    </nav>
-  </header>
-
-  <main class="shop-container">
-    <aside class="filters">
-      <h3>Filters</h3>
-      <div class="filter-group">
-        <label for="categoryFilter">Category</label>
-        <select id="categoryFilter">
-          <option value="">All</option>
-          <option value="Phones">Phones</option>
-          <option value="Laptops">Laptops</option>
-          <option value="Accessories">Accessories</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="brandFilter">Brand</label>
-        <select id="brandFilter">
-          <option value="">All</option>
-          <option value="Samsung">Samsung</option>
-          <option value="Apple">Apple</option>
-          <option value="Dell">Dell</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="priceFilter">Max Price: <span id="priceValue">1000</span></label>
-        <input type="range" id="priceFilter" min="0" max="1000" value="1000" />
-      </div>
-    </aside>
-
-    <section class="products">
-      <h2>All Products</h2>
-      <div class="product-grid" id="productGrid">
-        <p>Loading products...</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>&copy; 2025 ElectroMart. All rights reserved.</p>
-  </footer>
-
 <script>
   const API_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/products";
-  const CATEGORIES_URL = "https://ecommerce-electronics-0j4e.onrender.com/api/categories";
-  
   const productGrid = document.getElementById("productGrid");
   const categoryFilter = document.getElementById("categoryFilter");
   const brandFilter = document.getElementById("brandFilter");
@@ -89,14 +28,12 @@
     }
 
     products.forEach(product => {
-      const imageUrl = product.photoUrl || 
-        (product.photo ? `https://ecommerce-electronics-0j4e.onrender.com${product.photo}` : 'https://via.placeholder.com/150x150?text=No+Image');
-
+      const imageUrl = product.photoUrl || 'https://via.placeholder.com/150x150?text=No+Image';
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
         <div class="product-img">
-          <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;" />
+          <img src="${imageUrl}" alt="${product.name}" style="max-width: 100%; border-radius: 8px;">
         </div>
         <h3>${product.name}</h3>
         <p>Ksh ${product.price}</p>
@@ -131,8 +68,3 @@
 
   fetchProducts();
 </script>
-
-
-
-</body>
-</html>
