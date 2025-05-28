@@ -20,29 +20,29 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Product creation route
-router.post("/", upload.single("photo"), async (req, res) => {
+// routes/products.js
+
+const BASE_URL = "https://ecommerce-electronics-0j4e.onrender.com";
+
+router.get('/', async (req, res) => {
   try {
-    const { name, price, stock, features, description } = req.body;
+    const products = await Product.find();
 
-    if (!name || !price || !stock || !features || !description) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-
-    const product = new Product({
-      name,
-      price: Number(price),
-      stock: Number(stock),
-      features,
-      description,
-      photo: req.file ? req.file.filename : null, // Store only filename
+    const formattedProducts = products.map(product => {
+      const p = product.toObject();
+      if (p.photo) {
+        const filename = p.photo.split('/').pop(); // Get just the filename
+        p.photoUrl = `${BASE_URL}/uploads/${filename}`;
+      } else {
+        p.photoUrl = null; // Fallback if no photo
+      }
+      return p;
     });
 
-    await product.save();
-    res.status(201).json({ message: "Product created", product });
+    res.json(formattedProducts);
   } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ error: error.message || "Internal server error" });
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
