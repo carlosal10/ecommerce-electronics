@@ -18,31 +18,13 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Upload + Create Product
-router.post("/", upload.single("photo"), async (req, res) => {
+// POST /api/products - Create Product with Cloudinary URL
+router.post("/", async (req, res) => {
   try {
-    const { name, price, stock, features, description, category } = req.body;
+    const { name, price, stock, features, description, category, photoUrl } = req.body;
 
-    if (!name || !price || !stock || !features || !description || !category) {
+    if (!name || !price || !stock || !features || !description || !category || !photoUrl) {
       return res.status(400).json({ error: "All fields are required" });
-    }
-
-    let uploadedPhotoUrl = null;
-
-    if (req.file) {
-      // Upload to Cloudinary
-      const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "ecommerce/products" },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-
-      uploadedPhotoUrl = result.secure_url;
     }
 
     const product = new Product({
@@ -52,7 +34,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
       features,
       description,
       category,
-      photoUrl: uploadedPhotoUrl,
+      photoUrl // ✅ Save Cloudinary image URL directly
     });
 
     await product.save();
@@ -62,6 +44,7 @@ router.post("/", upload.single("photo"), async (req, res) => {
     res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
+
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find(); // or your logic
