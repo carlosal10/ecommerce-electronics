@@ -1,33 +1,48 @@
+// routes/products.js
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 const Product = require("../models/Product");
+const { v2: cloudinary } = require("cloudinary");
+const streamifier = require("streamifier");
 
 const router = express.Router();
 
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, "..", "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
-// Multer setup for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`),
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Multer memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// routes/products.js
-// Product creation route
+// Upload + Create Product
 router.post("/", upload.single("photo"), async (req, res) => {
   try {
-    const { name, price, stock, features, description } = req.body;
+    const { name, price, stock, features, description, category } = req.body;
 
-    if (!name || !price || !stock || !features || !description) {
+    if (!name || !price || !stock || !features || !description || !category) {
       return res.status(400).json({ error: "All fields are required" });
+    }
+
+    let uploadedPhotoUrl = null;
+
+    if (req.file) {
+      // Upload to Cloudinary
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "ecommerce/products" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+
+      uploadedPhotoUrl = result.secure_url;
     }
 
     const product = new Product({
@@ -36,7 +51,8 @@ router.post("/", upload.single("photo"), async (req, res) => {
       stock: Number(stock),
       features,
       description,
-      photo: req.file ? req.file.path.replace(/\\/g, "/") : null, // Use forward slashes for URLs
+      category,
+      photoUrl: uploadedPhotoUrl,
     });
 
     await product.save();
@@ -46,48 +62,3 @@ router.post("/", upload.single("photo"), async (req, res) => {
     res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
-
-const BASE_URL = "https://ecommerce-electronics-0j4e.onrender.com";
-
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find();
-
-    const formattedProducts = products.map(product => {
-      const p = product.toObject();
-      if (p.photo) {
-        const filename = p.photo.split('/').pop(); // Get just the filename
-        p.photoUrl = `${BASE_URL}/uploads/${filename}`;
-      } else {
-        p.photoUrl = null; // Fallback if no photo
-      }
-      return p;
-    });
-
-    res.json(formattedProducts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Get all products
-router.get("/", async (req, res) => {
-  try {
-    const products = await Product.find();
-    const baseUrl = `${req.protocol}://${req.get("host")}`; // e.g., https://ecommerce-electronics-0j4e.onrender.com
-
-    const formattedProducts = products.map((product) => {
-      const p = product.toObject();
-      p.photoUrl = p.photo ? `${baseUrl}/uploads/${p.photo}` : null;
-      return p;
-    });
-
-    res.json(formattedProducts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-module.exports = router;
