@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
       features,
       description,
       category,
-      photoUrl // ✅ Save Cloudinary image URL directly
+      photoUrl: photo, // ✅ Save Cloudinary image URL directly
     });
 
     await product.save();
