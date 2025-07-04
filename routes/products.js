@@ -62,4 +62,13 @@ router.post("/", upload.single("photo"), async (req, res) => {
     res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find(); // or your logic
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;
