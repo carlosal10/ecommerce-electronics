@@ -62,3 +62,4 @@ router.post("/", upload.single("photo"), async (req, res) => {
     res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
+module.exports = router;
