@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
-import Order from "../models/Order.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = express.Router();
