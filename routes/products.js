@@ -1,29 +1,32 @@
-// routes/products.js
 const express = require("express");
-const multer = require("multer");
 const Product = require("../models/Product");
 const { v2: cloudinary } = require("cloudinary");
-const streamifier = require("streamifier");
 
 const router = express.Router();
 
 // Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Multer memory storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
+// POST /api/products - Create a new product
 router.post("/", async (req, res) => {
   try {
     const { name, price, stock, features, description, category, photoUrl } = req.body;
 
-    if (!name || !price || !stock || !features || !description || !category || !photoUrl) {
-      return res.status(400).json({ error: "All fields are required" });
+    // ✅ Validate all required fields
+    if (
+      !name?.trim() ||
+      !price ||
+      !stock ||
+      !features?.trim() ||
+      !description?.trim() ||
+      !category?.trim() ||
+      !photoUrl?.trim()
+    ) {
+      return res.status(400).json({ error: "All fields are required." });
     }
 
     const product = new Product({
@@ -33,25 +36,25 @@ router.post("/", async (req, res) => {
       features: features.trim(),
       description: description.trim(),
       category: category.trim(),
-      photoUrl: photoUrl.trim()
+      photoUrl: photoUrl.trim(),
     });
 
     await product.save();
-    res.status(201).json({ message: "Product created successfully", product });
+    return res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
     console.error("Error creating product:", error);
-    res.status(500).json({ error: error.message || "Internal server error" });
+    return res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
 
-// GET /api/products - Get all products
+// GET /api/products - Fetch all products
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
-    res.json(products);
+    return res.json(products);
   } catch (err) {
     console.error("Error fetching products:", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
