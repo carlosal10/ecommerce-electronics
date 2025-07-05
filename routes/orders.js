@@ -3,8 +3,6 @@ const router = express.Router();
 const Order = require('../models/Order');
 import { authenticate } from "../middleware/auth.js";
 
-const router = express.Router();
-
 router.post("/", authenticate, async (req, res) => {
   const { items, totalItems, totalCost } = req.body;
   if (!items || !totalItems || !totalCost)
