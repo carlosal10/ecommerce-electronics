@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const categoryRoutes = require('./routes/Category');
 const productRoutes = require('./routes/products');
-const orderRoutes = require('./routes/oder');
+const ordersRoutes = require('./routes/oder');
 const app = express();
 
 app.use(cors());
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api/products', productRoutes); 
 app.use('/api/categories', categoryRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static images
-app.use(/
+app.use("/api/orders", ordersRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
