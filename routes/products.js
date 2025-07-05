@@ -18,7 +18,6 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// POST /api/products - Create Product with Cloudinary URL
 router.post("/", async (req, res) => {
   try {
     const { name, price, stock, features, description, category, photoUrl } = req.body;
@@ -28,28 +27,30 @@ router.post("/", async (req, res) => {
     }
 
     const product = new Product({
-      name,
+      name: name.trim(),
       price: Number(price),
       stock: Number(stock),
-      features,
-      description,
-      category,
-      photoUrl, // ✅ Save Cloudinary image URL directly
+      features: features.trim(),
+      description: description.trim(),
+      category: category.trim(),
+      photoUrl: photoUrl.trim()
     });
 
     await product.save();
-    res.status(201).json({ message: "Product created", product });
+    res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
 
+// GET /api/products - Get all products
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find(); // or your logic
+    const products = await Product.find().sort({ createdAt: -1 });
     res.json(products);
   } catch (err) {
+    console.error("Error fetching products:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
