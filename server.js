@@ -5,6 +5,7 @@ const cors = require('cors');
 const categoryRoutes = require('./routes/Category');
 const productRoutes = require('./routes/products');
 const ordersRoutes = require('./routes/orders');
+const authRoutes = require('./routes/auth');
 const app = express();
 
 app.use(cors());
@@ -14,6 +15,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static images
 app.use("/api/orders", ordersRoutes);
+app.use("/api/signup", authRoutes);
+app.use("/api/login", authRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
