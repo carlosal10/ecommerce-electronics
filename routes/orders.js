@@ -1,6 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+import Order from "../models/Order.js";
+import { authenticate } from "../middleware/auth.js";
+
+const router = express.Router();
+
+router.post("/", authenticate, async (req, res) => {
+  const { items, totalItems, totalCost } = req.body;
+  if (!items || !totalItems || !totalCost)
+    return res.status(400).json({ error: "Incomplete order data" });
+
+  const order = new Order({
+    user: req.user._id,
+    items, totalItems, totalCost,
+    date: new Date(),
+  });
+  await order.save();
+  res.status(201).json({ message: "Order saved", order });
+});
+
 
 // @POST /api/orders
 router.post('/', async (req, res) => {
