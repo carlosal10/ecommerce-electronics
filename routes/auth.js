@@ -4,7 +4,7 @@ const User = require('../models/User'); // your schema
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-router.post('/signup', async (req, res) => {
+router.post('/', async (req, res) => {
   const { name, email, phone, password } = req.body;
   if (!name || !email || !phone || !password) 
     return res.status(400).json({ error: 'All fields are required' });
@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
   res.json({ message: 'Signup successful' });
 });
 
-router.post('/login', async (req, res) => {
+router.post('/', async (req, res) => {
   const { emailOrPhone, password } = req.body;
   const user = await User.findOne({ $or: [{ email: emailOrPhone }, { phone: emailOrPhone }] });
   if (!user || !(await bcrypt.compare(password, user.password)))
