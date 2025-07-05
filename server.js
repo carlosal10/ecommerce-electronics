@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const categoryRoutes = require('./routes/Category');
 const productRoutes = require('./routes/products');
-const ordersRoutes = require('./routes/oder');
+const ordersRoutes = require('./routes/oders');
 const app = express();
 
 app.use(cors());
