@@ -58,4 +58,42 @@ router.get("/", async (req, res) => {
   }
 });
 
+// DELETE /api/products/:id
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    if (!deletedProduct) return res.status(404).json({ error: "Product not found" });
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// PUT /api/products/:id
+router.put('/:id', async (req, res) => {
+  try {
+    const { name, price, stock, features, description, category, photoUrl } = req.body;
+
+    if (!name || !price || !stock || !features || !description || !category || !photoUrl) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { name, price, stock, features, description, category, photoUrl },
+      { new: true }
+    );
+
+    if (!updatedProduct) return res.status(404).json({ error: "Product not found" });
+
+    res.json({ message: 'Product updated successfully', product: updatedProduct });
+  } catch (err) {
+    console.error("Error updating product:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 module.exports = router;
