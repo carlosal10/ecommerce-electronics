@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Category = require('../models/categories');
+import Category from '../models/categories';
 
 // Add a new category
 router.post('/', async (req, res) => {
@@ -21,4 +21,4 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 });
-module.exports = router;
+export default router;
