@@ -1,10 +1,10 @@
 require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const categoryRoutes = require('./routes/Category');
-const productRoutes = require('./routes/products');
-const ordersRoutes = require('./routes/orders');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import categoryRoutes from './routes/Category;
+import productRoutes from './routes/products';
+import ordersRoutes from './routes/orders';
 const app = express();
 
 app.use(cors());
