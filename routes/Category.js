@@ -1,6 +1,7 @@
 import express from 'express';
+import Category from '../models/categories.js'; // ✅ Make sure to include `.js` for ESM
+
 const router = express.Router();
-import Category from '../models/categories';
 
 // Add a new category
 router.post('/', async (req, res) => {
@@ -12,7 +13,8 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-// For categories (adjust if you have Category model)
+
+// Get all categories
 router.get('/', async (req, res) => {
   try {
     const categories = await Category.find();
@@ -21,4 +23,5 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch categories' });
   }
 });
+
 export default router;
