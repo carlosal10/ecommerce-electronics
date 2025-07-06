@@ -1,6 +1,6 @@
-const express = require("express");
-const Product = require("../models/Product");
-const { v2: cloudinary } = require("cloudinary");
+import express from "express";
+import Product from "../models/Product";
+import { v2: cloudinary } from "cloudinary";
 
 const router = express.Router();
 
@@ -96,4 +96,4 @@ router.put('/:id', async (req, res) => {
 });
 
 
-module.exports = router;
+export default router;
