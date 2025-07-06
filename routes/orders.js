@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Order = require('../models/Order');
+import Order from '../models/Order';
 import { authenticate } from "../middleware/auth.js";
 
 router.post("/", authenticate, async (req, res) => {
@@ -56,4 +56,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
