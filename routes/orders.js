@@ -1,7 +1,7 @@
 import express from 'express';
-const router = express.Router();
-import Order from '../models/Order';
+import Order from '../models/Order.js';
 import { authenticate } from "../middleware/auth.js";
+const router = express.Router();
 
 router.post("/", authenticate, async (req, res) => {
   const { items, totalItems, totalCost } = req.body;
