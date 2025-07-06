@@ -1,5 +1,5 @@
 import express from "express";
-import Product from "../models/Product";
+import Product from "../models/Product.js";
 import { v2: cloudinary } from "cloudinary";
 
 const router = express.Router();
