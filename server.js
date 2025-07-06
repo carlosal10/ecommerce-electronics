@@ -2,9 +2,9 @@ require('dotenv').config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import categoryRoutes from './routes/Category;
-import productRoutes from './routes/products';
-import ordersRoutes from './routes/orders';
+import categoryRoutes from './routes/Category.js';
+import productRoutes from './routes/products.js';
+import ordersRoutes from './routes/orders.js';
 const app = express();
 
 app.use(cors());
