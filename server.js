@@ -8,6 +8,7 @@ import cors from 'cors';
 import categoryRoutes from './routes/Category.js';
 import productRoutes from './routes/products.js';
 import ordersRoutes from './routes/orders.js';
+import authRoutes from './routes/auth.js';
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static images
 app.use("/api/orders", ordersRoutes);
+app.use('/api/auth', authRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
