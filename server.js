@@ -11,12 +11,13 @@ import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
 
 const app = express();
+const allowedOrigins = ['https://electromart-2vwj.onrender.com'];
 
 app.use(cors({
-  origin: '*', // OR better: ['https://electromart-2vwj.onrender.com']
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true // if you're using cookies/session
 }));
+
 app.use(express.json());
 
 app.use('/api/products', productRoutes); 
