@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 const router = express.Router();
-
+import { initiateStkPush } from '../controllers/stkPushController.js';
 const getTimestamp = () => {
   // returns YYYYMMDDHHmmss
 };
@@ -19,7 +19,7 @@ const getAccessToken = async () => {
   return data.access_token;
 };
 
-router.post('/stk-push', async (req, res) => {
+router.post('/stk-push', initiateStkPush, async (req, res) => {
   const { phoneNumber, amount, accountReference } = req.body;
   if (!phoneNumber || !amount) return res.status(400).json({ error: 'Missing fields' });
 
