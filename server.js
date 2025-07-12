@@ -25,7 +25,7 @@ app.use('/api/categories', categoryRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static images
 app.use("/api/orders", ordersRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/mpesa', mpesaRoutes);
+app.use('/api/payments', mpesaRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
