@@ -1,6 +1,7 @@
 // controllers/stkPushController.js
-const axios = require('axios');
-require('dotenv').config();
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
 
 exports.initiateStkPush = async (req, res) => {
   try {
