@@ -4,7 +4,7 @@ dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-
+import mpesaRoutes from './routes/mpesa.js';
 import categoryRoutes from './routes/Category.js';
 import productRoutes from './routes/products.js';
 import ordersRoutes from './routes/orders.js';
@@ -25,6 +25,7 @@ app.use('/api/categories', categoryRoutes);
 app.use("/uploads", express.static("uploads")); // Serve static images
 app.use("/api/orders", ordersRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/mpesa', mpesaRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
