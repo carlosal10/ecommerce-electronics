@@ -83,4 +83,13 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
+router.get("/my-orders", authenticate, async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id }).sort({ date: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: "Could not fetch orders" });
+  }
+});
+
 export default router;
