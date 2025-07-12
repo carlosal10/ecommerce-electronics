@@ -59,3 +59,4 @@ exports.initiateStkPush = async (req, res) => {
     res.status(500).json({ errorMessage: 'Failed to initiate STK Push.' });
   }
 };
+export default router;
