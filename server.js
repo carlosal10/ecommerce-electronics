@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 // All other routes → React handles
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'electromart/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'electromart/electromart/build', 'index.html'));
 });
 
 
