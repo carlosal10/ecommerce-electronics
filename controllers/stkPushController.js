@@ -3,7 +3,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
-exports.initiateStkPush = async (req, res) => {
+export const initiateStkPush = async (req, res) => {
   try {
     const { phone, amount, orderId } = req.body;
 
@@ -59,4 +59,3 @@ exports.initiateStkPush = async (req, res) => {
     res.status(500).json({ errorMessage: 'Failed to initiate STK Push.' });
   }
 };
-export default router;
