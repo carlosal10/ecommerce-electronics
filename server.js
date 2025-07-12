@@ -9,7 +9,8 @@ import categoryRoutes from './routes/Category.js';
 import productRoutes from './routes/products.js';
 import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
-
+import path from 'path';
+import { fileURLToPath } from 'url';
 const app = express();
 const allowedOrigins = ['https://electromart-2vwj.onrender.com'];
 
@@ -26,6 +27,19 @@ app.use("/uploads", express.static("uploads")); // Serve static images
 app.use("/api/orders", ordersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', mpesaRoutes);
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static frontend
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// All other routes → React handles
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'electromart/build', 'index.html'));
+});
+
 
 
 mongoose.connect(process.env.MONGO_URI)
