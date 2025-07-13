@@ -11,6 +11,7 @@ import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 const app = express();
 const allowedOrigins = ['https://electromart-2vwj.onrender.com'];
 
@@ -23,15 +24,15 @@ app.use(express.json());
 
 app.use('/api/products', productRoutes); 
 app.use('/api/categories', categoryRoutes);
-app.use("/uploads", express.static("uploads")); // Serve static images
-app.use("/api/orders", ordersRoutes);
+app.use('/uploads', express.static('uploads')); // Serve static images
+app.use('/api/orders', ordersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', mpesaRoutes);
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+<<<<<<< HEAD
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('*', (req, res) => {
@@ -40,7 +41,17 @@ app.get('*', (req, res) => {
 
 
 
+=======
+// Serve static files from React
+app.use(express.static(path.join(__dirname, '../electromart/electromart/build')));
 
+// Catch-all route to serve React index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../electromart/electromart/build', 'index.html'));
+}); // ✅ THIS was missing
+>>>>>>> 95852608b7222793e13ed1a99d8c2f9b78302aa2
+
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB Atlas');
