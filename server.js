@@ -11,6 +11,7 @@ import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+const app = express();
 
 const allowedOrigins = [
   'https://ecommerce-electronics-0j4e.onrender.com', // old
