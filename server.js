@@ -44,11 +44,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ✅ Serve static files from clients/build
-app.use(express.static(path.join(__dirname, 'clients', 'build')));
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'clients', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
 
