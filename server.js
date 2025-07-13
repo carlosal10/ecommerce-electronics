@@ -32,24 +32,12 @@ app.use('/api/payments', mpesaRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-<<<<<<< HEAD
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
-
-
-=======
-// Serve static files from React
-app.use(express.static(path.join(__dirname, '../electromart/electromart/build')));
-
-// Catch-all route to serve React index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../electromart/electromart/build', 'index.html'));
-}); // ✅ THIS was missing
->>>>>>> 95852608b7222793e13ed1a99d8c2f9b78302aa2
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
