@@ -11,6 +11,7 @@ import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 const app = express();
 const allowedOrigins = ['https://electromart-2vwj.onrender.com'];
 
@@ -23,11 +24,10 @@ app.use(express.json());
 
 app.use('/api/products', productRoutes); 
 app.use('/api/categories', categoryRoutes);
-app.use("/uploads", express.static("uploads")); // Serve static images
-app.use("/api/orders", ordersRoutes);
+app.use('/uploads', express.static('uploads')); // Serve static images
+app.use('/api/orders', ordersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', mpesaRoutes);
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,12 +35,12 @@ const __dirname = path.dirname(__filename);
 // Serve static files from React
 app.use(express.static(path.join(__dirname, '../electromart/electromart/build')));
 
-// Catch-all route to serve React
+// Catch-all route to serve React index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../electromart/electromart/build', 'index.html'));
+}); // ✅ THIS was missing
 
-
-
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB Atlas');
