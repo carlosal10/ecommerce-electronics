@@ -32,10 +32,12 @@ app.use('/api/payments', mpesaRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, 'build')));
+// ✅ Serve static files from clients/build
+app.use(express.static(path.join(__dirname, 'clients', 'build')));
+
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'clients', 'build', 'index.html'));
 });
 
 
