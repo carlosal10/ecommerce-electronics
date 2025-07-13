@@ -32,12 +32,10 @@ app.use('/api/payments', mpesaRoutes);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Correct static serve
-app.use(express.static(path.join(__dirname, 'electromart/electromart/build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-// ✅ Correct catch-all route
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'electromart/electromart/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 

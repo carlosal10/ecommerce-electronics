@@ -1,6 +1,5 @@
 .shop-container {
     display: flex;
-    padding: 2rem;
     background-color: #EBFCFF;
     color: #000;
   }
@@ -85,4 +84,33 @@
   .btn-red:hover {
     background-color: #AF0000;
   }
+  /* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .shop-container {
+    flex-direction: column;
+  }
+
+  .filters {
+    order: 2;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .products {
+    order: 1;
+    width: 100%;
+  }
+    
+.product-img {
+    width: 100%;
+    height: 250px;
+    background-color: #00232a;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
   
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
