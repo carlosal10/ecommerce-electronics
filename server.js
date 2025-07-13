@@ -46,6 +46,9 @@ const __dirname = path.dirname(__filename);
 // ✅ Serve static files from clients/build
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 
+app.get('/test', (req, res) => {
+  res.send('Server is working');
+});
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
