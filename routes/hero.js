@@ -1,55 +1,69 @@
 import express from 'express';
-import Hero from '../models/hero.js'; // ensure this matches your actual model file
+import Hero from '../models/hero.js'; // Your Mongoose model
 
 const router = express.Router();
 
-// ✅ Create a new hero (e.g. featured product/banner)
+// ✅ Create new hero banner
 router.post('/', async (req, res) => {
   try {
-    const { title, description, imageUrl, link } = req.body;
+    const { title, subtitle, description, videoUrl, buttonText, buttonLink } = req.body;
 
-    if (!title || !imageUrl) {
-      return res.status(400).json({ error: 'Title and image are required' });
+    if (!title || !videoUrl) {
+      return res.status(400).json({ error: 'Title and video URL are required' });
     }
 
-    const hero = new Hero({ title, description, imageUrl, link });
-    await hero.save();
+    const banner = new Hero({ title, subtitle, description, videoUrl, buttonText, buttonLink });
+    await banner.save();
 
-    res.status(201).json({ message: 'Hero created', hero });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(201).json({ message: 'Hero banner created', banner });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create hero banner' });
   }
 });
 
-// ✅ Get all heroes (or use this to get the latest one)
+// ✅ Get all hero banners (for slideshow)
 router.get('/', async (req, res) => {
   try {
-    const heroes = await Hero.find().sort({ createdAt: -1 }).limit(1); // or remove limit to get all
-    res.json(heroes.length === 1 ? heroes[0] : heroes);
+    const banners = await Hero.find().sort({ createdAt: -1 });
+    res.status(200).json(banners);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch hero data' });
+    res.status(500).json({ error: 'Failed to fetch hero banners' });
   }
 });
 
-// ✅ Optional: Update a hero
+// ✅ Get single hero banner by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const banner = await Hero.findById(req.params.id);
+    if (!banner) return res.status(404).json({ error: 'Banner not found' });
+
+    res.json(banner);
+  } catch (err) {
+    res.status(500).json({ error: 'Error retrieving banner' });
+  }
+});
+
+// ✅ Update a banner
 router.put('/:id', async (req, res) => {
   try {
-    const hero = await Hero.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!hero) return res.status(404).json({ error: 'Hero not found' });
-    res.json(hero);
+    const updated = await Hero.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ error: 'Banner not found' });
+
+    res.json({ message: 'Hero banner updated', banner: updated });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to update banner' });
   }
 });
 
-// ✅ Optional: Delete a hero
+// ✅ Delete a banner
 router.delete('/:id', async (req, res) => {
   try {
-    const result = await Hero.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ error: 'Hero not found' });
-    res.json({ message: 'Hero deleted' });
+    const deleted = await Hero.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Banner not found' });
+
+    res.json({ message: 'Banner deleted successfully' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to delete banner' });
   }
 });
 
