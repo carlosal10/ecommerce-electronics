@@ -139,4 +139,26 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const { category, subcategory, brand, search, minPrice, maxPrice } = req.query;
+    const filter = {};
+
+    if (category) filter.mainCategory = category;
+    if (subcategory) filter.subcategory = subcategory;
+    if (brand) filter.brand = brand;
+    if (search) filter.name = { $regex: search, $options: 'i' };
+    if (minPrice || maxPrice) filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+
+    const products = await Product.find(filter).sort({ createdAt: -1 }).lean();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;
+
 export default router;
