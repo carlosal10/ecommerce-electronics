@@ -43,4 +43,46 @@
   .btn-red:hover {
     background-color: #AF0000;
   }
+.accordion {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.accordion button {
+  background: #eee;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background 0.3s ease;
+}
+
+.accordion button:hover {
+  background: #ddd;
+}
+
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.preview-grid img {
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
   
