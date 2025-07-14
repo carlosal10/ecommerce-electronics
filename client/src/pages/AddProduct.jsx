@@ -23,8 +23,8 @@ const AddProduct = () => {
   const [mainCategory, setMainCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
   const [brand, setBrand] = useState('');
-  const [loading, setLoading] = useState(false);
   const [photoPreviews, setPhotoPreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [newMainCategory, setNewMainCategory] = useState('');
   const [newSubcategory, setNewSubcategory] = useState('');
@@ -34,6 +34,7 @@ const AddProduct = () => {
   const [showSub, setShowSub] = useState(false);
   const [showBrand, setShowBrand] = useState(false);
 
+  // Fetch category tree
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -47,13 +48,23 @@ const AddProduct = () => {
     fetchCategories();
   }, []);
 
+  const getSubcategories = () => {
+    const cat = categories.find(c => c.name === mainCategory);
+    return cat?.subcategories || [];
+  };
+
+  const getBrands = () => {
+    const sub = getSubcategories().find(s => s.name === subcategory);
+    return sub?.brands || [];
+  };
+
   const handleProductChange = (e) => {
     const { name, value } = e.target;
-    setProductForm((prev) => ({ ...prev, [name]: value }));
+    setProductForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleToggleStock = (e) => {
-    setProductForm((prev) => ({ ...prev, inStock: e.target.value === 'true' }));
+    setProductForm(prev => ({ ...prev, inStock: e.target.value === 'true' }));
   };
 
   const handleImageChange = async (e) => {
@@ -81,18 +92,8 @@ const AddProduct = () => {
       }
     }
 
-    setProductForm((prev) => ({ ...prev, photoUrls: uploads }));
+    setProductForm(prev => ({ ...prev, photoUrls: uploads }));
     setPhotoPreviews(previews);
-  };
-
-  const getSubcategories = () => {
-    const cat = categories.find((c) => c.name === mainCategory);
-    return cat?.subcategories || [];
-  };
-
-  const getBrands = () => {
-    const sub = getSubcategories().find((s) => s.name === subcategory);
-    return sub?.brands || [];
   };
 
   const handleSubmit = async (e) => {
@@ -106,8 +107,8 @@ const AddProduct = () => {
       mainCategory,
       subcategory,
       brand,
-      colors: productForm.colors.split(',').map((c) => c.trim()),
-      sizes: productForm.sizes.split(',').map((s) => s.trim()),
+      colors: productForm.colors.split(',').map(c => c.trim()),
+      sizes: productForm.sizes.split(',').map(s => s.trim()),
     };
 
     setLoading(true);
@@ -130,7 +131,6 @@ const AddProduct = () => {
     }
   };
 
-  // Category Handlers
   const handleMainCategoryAdd = async () => {
     if (!newMainCategory.trim()) return;
     try {
@@ -143,7 +143,7 @@ const AddProduct = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      setCategories((prev) => [...prev, data.category]);
+      setCategories(prev => [...prev, data.category]);
       toast.success('Main category added');
       setNewMainCategory('');
     } catch (err) {
@@ -194,70 +194,127 @@ const AddProduct = () => {
       <ToastContainer />
       <h2>Add New Product</h2>
 
-      {/* Inline Accordion Forms */}
+      {/* Accordion */}
       <div className="accordion">
-        <button onClick={() => setShowMain(!showMain)}>+ Add Main Category</button>
+        <button type="button" onClick={() => setShowMain(!showMain)}>+ Add Main Category</button>
         {showMain && (
           <div className="form-inline">
-            <input
-              type="text"
-              placeholder="New main category"
-              value={newMainCategory}
-              onChange={(e) => setNewMainCategory(e.target.value)}
-            />
-            <button onClick={handleMainCategoryAdd}>Save</button>
+            <input type="text" placeholder="New main category" value={newMainCategory} onChange={(e) => setNewMainCategory(e.target.value)} />
+            <button type="button" onClick={handleMainCategoryAdd}>Save</button>
           </div>
         )}
 
-        <button onClick={() => setShowSub(!showSub)}>+ Add Subcategory</button>
+        <button type="button" onClick={() => setShowSub(!showSub)}>+ Add Subcategory</button>
         {showSub && (
           <div className="form-inline">
             <select value={mainCategory} onChange={(e) => setMainCategory(e.target.value)}>
               <option value="">Select Main Category</option>
-              {categories.map((cat) => (
-                <option key={cat.name} value={cat.name}>{cat.name}</option>
-              ))}
+              {categories.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
             </select>
-            <input
-              type="text"
-              placeholder="New subcategory"
-              value={newSubcategory}
-              onChange={(e) => setNewSubcategory(e.target.value)}
-            />
-            <button onClick={handleSubcategoryAdd}>Save</button>
+            <input type="text" placeholder="New subcategory" value={newSubcategory} onChange={(e) => setNewSubcategory(e.target.value)} />
+            <button type="button" onClick={handleSubcategoryAdd}>Save</button>
           </div>
         )}
 
-        <button onClick={() => setShowBrand(!showBrand)}>+ Add Brand</button>
+        <button type="button" onClick={() => setShowBrand(!showBrand)}>+ Add Brand</button>
         {showBrand && (
           <div className="form-inline">
             <select value={mainCategory} onChange={(e) => setMainCategory(e.target.value)}>
-              <option value="">Main</option>
-              {categories.map((cat) => (
-                <option key={cat.name} value={cat.name}>{cat.name}</option>
-              ))}
+              <option value="">Main Category</option>
+              {categories.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
             </select>
             <select value={subcategory} onChange={(e) => setSubcategory(e.target.value)}>
               <option value="">Subcategory</option>
-              {getSubcategories().map((sub) => (
-                <option key={sub.name} value={sub.name}>{sub.name}</option>
-              ))}
+              {getSubcategories().map(sub => <option key={sub.name} value={sub.name}>{sub.name}</option>)}
             </select>
-            <input
-              type="text"
-              placeholder="New brand"
-              value={newBrand}
-              onChange={(e) => setNewBrand(e.target.value)}
-            />
-            <button onClick={handleBrandAdd}>Save</button>
+            <input type="text" placeholder="New brand" value={newBrand} onChange={(e) => setNewBrand(e.target.value)} />
+            <button type="button" onClick={handleBrandAdd}>Save</button>
           </div>
         )}
       </div>
 
       {/* Product Form */}
       <form className="product-form" onSubmit={handleSubmit}>
-        {/* All input fields as shown before */}
-        {/* ...reuse the same inputs shown in previous messages... */}
+        <div className="form-group">
+          <label>Item Name</label>
+          <input type="text" name="name" value={productForm.name} onChange={handleProductChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>Price</label>
+          <input type="number" name="price" value={productForm.price} onChange={handleProductChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>Stock</label>
+          <input type="number" name="stock" value={productForm.stock} onChange={handleProductChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>In Stock?</label>
+          <select value={productForm.inStock} onChange={handleToggleStock}>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Colors (comma separated)</label>
+          <input type="text" name="colors" value={productForm.colors} onChange={handleProductChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Sizes (comma separated)</label>
+          <input type="text" name="sizes" value={productForm.sizes} onChange={handleProductChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Specifications</label>
+          <textarea name="features" rows="3" value={productForm.features} onChange={handleProductChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" value={productForm.description} onChange={handleProductChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>Main Category</label>
+          <select value={mainCategory} onChange={(e) => { setMainCategory(e.target.value); setSubcategory(''); setBrand(''); }} required>
+            <option value="">-- Select --</option>
+            {categories.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Subcategory</label>
+          <select value={subcategory} onChange={(e) => { setSubcategory(e.target.value); setBrand(''); }} disabled={!mainCategory} required>
+            <option value="">-- Select --</option>
+            {getSubcategories().map(sub => <option key={sub.name} value={sub.name}>{sub.name}</option>)}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Brand</label>
+          <select value={brand} onChange={(e) => setBrand(e.target.value)} disabled={!subcategory} required>
+            <option value="">-- Select --</option>
+            {getBrands().map(br => <option key={br} value={br}>{br}</option>)}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Upload Product Images</label>
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+          <div className="preview-grid">
+            {photoPreviews.map((src, i) => (
+              <img key={i} src={src} alt="preview" style={{ width: 100, margin: '0.5rem', borderRadius: 6 }} />
+            ))}
+          </div>
+        </div>
+
+        <button type="submit" className="btn-red" disabled={loading}>
+          {loading ? 'Uploading...' : 'Add Product'}
+        </button>
       </form>
     </section>
   );
