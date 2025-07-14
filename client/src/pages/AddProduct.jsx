@@ -7,21 +7,26 @@ import './add-product.css';
 const AddProduct = () => {
   const navigate = useNavigate();
 
-  const [photoPreview, setPhotoPreview] = useState(null);
   const [productForm, setProductForm] = useState({
     name: '',
     price: '',
     stock: '',
     features: '',
     description: '',
-    photo: '' // Cloudinary URL
+    inStock: true,
+    colors: '',
+    sizes: '',
+    photoUrls: []
   });
 
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [categoryName, setCategoryName] = useState('');
+  const [mainCategory, setMainCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
+  const [brand, setBrand] = useState('');
   const [loading, setLoading] = useState(false);
+  const [photoPreviews, setPhotoPreviews] = useState([]);
 
+  // Fetch full category tree
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -30,13 +35,11 @@ const AddProduct = () => {
         setCategories(data);
       } catch (err) {
         toast.error('Failed to load categories');
-        console.error(err);
       }
     }
     fetchCategories();
   }, []);
 
-  // ✅ FIXED: missing definition
   const handleProductChange = (e) => {
     const { name, value } = e.target;
     setProductForm((prev) => ({
@@ -45,47 +48,53 @@ const AddProduct = () => {
     }));
   };
 
-  const handlePhotoChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'ecom_public_upload');
-
-    try {
-      const res = await fetch('https://api.cloudinary.com/v1_1/dderoi7rp/image/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.secure_url) {
-        setProductForm((prev) => ({ ...prev, photo: data.secure_url }));
-        setPhotoPreview(data.secure_url);
-        toast.success('Image uploaded!');
-      } else {
-        throw new Error('Upload failed');
-      }
-    } catch (err) {
-      toast.error('Image upload failed');
-      console.error(err);
-    }
+  const handleToggleStock = (e) => {
+    setProductForm((prev) => ({ ...prev, inStock: e.target.value === 'true' }));
   };
 
-  const handleProductSubmit = async (e) => {
-    e.preventDefault();
+  const handleImageChange = async (e) => {
+    const files = Array.from(e.target.files);
+    const uploads = [];
+    const previews = [];
 
-    if (!selectedCategory) {
-      toast.error('Please select a category');
-      return;
+    for (let file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'ecom_public_upload');
+
+      try {
+        const res = await fetch('https://api.cloudinary.com/v1_1/dderoi7rp/image/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploads.push(data.secure_url);
+          previews.push(data.secure_url);
+        }
+      } catch {
+        toast.error('Failed to upload one or more images');
+      }
     }
 
-    const { photo, ...rest } = productForm;
+    setProductForm((prev) => ({ ...prev, photoUrls: uploads }));
+    setPhotoPreviews(previews);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!mainCategory || !subcategory || !brand) {
+      return toast.error('Please select full category path');
+    }
+
     const payload = {
-      ...rest,
-      category: selectedCategory,
-      photoUrl: photo, // ✅ must match backend schema
+      ...productForm,
+      mainCategory,
+      subcategory,
+      brand,
+      colors: productForm.colors.split(',').map(c => c.trim()),
+      sizes: productForm.sizes.split(',').map(s => s.trim())
     };
 
     setLoading(true);
@@ -93,66 +102,38 @@ const AddProduct = () => {
       const res = await fetch('https://ecommerce-electronics-0j4e.onrender.com/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Unknown error');
 
       toast.success('Product added!');
-      setTimeout(() => navigate('/admin/products'), 2000);
+      setTimeout(() => navigate('/admin/products'), 1500);
     } catch (error) {
-      toast.error('Error: ' + error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCategorySubmit = async (e) => {
-    e.preventDefault();
-    const name = categoryName.trim();
-    if (!name) return;
+  const getSubcategories = () => {
+    const cat = categories.find(c => c.name === mainCategory);
+    return cat?.subcategories || [];
+  };
 
-    try {
-      const res = await fetch('https://ecommerce-electronics-0j4e.onrender.com/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
-      });
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || 'Unknown error');
-
-      toast.success('Category added!');
-      setCategoryName('');
-      setCategories((prev) => [...prev, { name, _id: Date.now().toString() }]);
-    } catch (err) {
-      toast.error('Failed to add category: ' + err.message);
-    }
+  const getBrands = () => {
+    const sub = getSubcategories().find(s => s.name === subcategory);
+    return sub?.brands || [];
   };
 
   return (
     <section className="form-section">
-      <h3 style={{ marginTop: '10px' }}>Add Category</h3>
-      <form className="product-form" onSubmit={handleCategorySubmit}>
-        <div className="form-group">
-          <label>Category Name</label>
-          <input
-            type="text"
-            name="category"
-            placeholder="e.g., Smartphones"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn-red">Add Category</button>
-      </form>
-
       <ToastContainer />
       <h2>Add New Product</h2>
 
-      <form className="product-form" onSubmit={handleProductSubmit}>
+      <form className="product-form" onSubmit={handleSubmit}>
+        {/* Name & Price */}
         <div className="form-group">
           <label>Item Name</label>
           <input type="text" name="name" value={productForm.name} onChange={handleProductChange} required />
@@ -164,45 +145,85 @@ const AddProduct = () => {
         </div>
 
         <div className="form-group">
-          <label>Stock Availability</label>
+          <label>Stock Quantity</label>
           <input type="number" name="stock" value={productForm.stock} onChange={handleProductChange} required />
         </div>
 
         <div className="form-group">
-          <label>Specifications / Features</label>
-          <textarea name="features" rows="3" value={productForm.features} onChange={handleProductChange} required />
+          <label>In Stock?</label>
+          <select value={productForm.inStock} onChange={handleToggleStock}>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+
+        {/* Variants */}
+        <div className="form-group">
+          <label>Color Variants (comma separated)</label>
+          <input type="text" name="colors" value={productForm.colors} onChange={handleProductChange} />
         </div>
 
         <div className="form-group">
-          <label>Product Description</label>
-          <textarea name="description" rows="3" value={productForm.description} onChange={handleProductChange} required />
+          <label>Size Variants (comma separated)</label>
+          <input type="text" name="sizes" value={productForm.sizes} onChange={handleProductChange} />
+        </div>
+
+        {/* Features & Description */}
+        <div className="form-group">
+          <label>Specifications</label>
+          <textarea name="features" rows="2" value={productForm.features} onChange={handleProductChange} />
         </div>
 
         <div className="form-group">
-          <label>Category</label>
-          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} required>
-            <option value="">-- Select Category --</option>
-            {categories.map((cat) => (
-              <option key={cat._id} value={cat.name}>{cat.name}</option>
-            ))}
+          <label>Description</label>
+          <textarea name="description" rows="3" value={productForm.description} onChange={handleProductChange} />
+        </div>
+
+        {/* Category Select */}
+        <div className="form-group">
+          <label>Main Category</label>
+          <select value={mainCategory} onChange={(e) => {
+            setMainCategory(e.target.value);
+            setSubcategory('');
+            setBrand('');
+          }}>
+            <option value="">-- Select --</option>
+            {categories.map(cat => <option key={cat.name} value={cat.name}>{cat.name}</option>)}
           </select>
         </div>
 
         <div className="form-group">
-          <label>Upload Product Photo</label>
-          <input type="file" accept="image/*" onChange={handlePhotoChange} required />
-          {photoPreview && (
-            <img
-              src={photoPreview}
-              alt="Preview"
-              className="preview"
-              style={{ marginTop: '10px', maxWidth: '200px', borderRadius: '8px' }}
-            />
-          )}
+          <label>Subcategory</label>
+          <select value={subcategory} onChange={(e) => {
+            setSubcategory(e.target.value);
+            setBrand('');
+          }} disabled={!mainCategory}>
+            <option value="">-- Select --</option>
+            {getSubcategories().map(sub => <option key={sub.name} value={sub.name}>{sub.name}</option>)}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Brand</label>
+          <select value={brand} onChange={(e) => setBrand(e.target.value)} disabled={!subcategory}>
+            <option value="">-- Select --</option>
+            {getBrands().map(br => <option key={br} value={br}>{br}</option>)}
+          </select>
+        </div>
+
+        {/* Images */}
+        <div className="form-group">
+          <label>Upload Product Images</label>
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+          <div className="preview-grid">
+            {photoPreviews.map((src, i) => (
+              <img key={i} src={src} alt="preview" style={{ width: 100, margin: '0.5rem', borderRadius: 6 }} />
+            ))}
+          </div>
         </div>
 
         <button type="submit" className="btn-red" disabled={loading}>
-          {loading ? 'Adding...' : 'Add Product'}
+          {loading ? 'Uploading...' : 'Add Product'}
         </button>
       </form>
     </section>
