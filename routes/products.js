@@ -14,11 +14,26 @@ cloudinary.config({
 // ✅ CREATE PRODUCT
 router.post('/', async (req, res) => {
   try {
-    const { name, price, stock, features, description, category, photoUrl } = req.body;
+    const {
+      name,
+      price,
+      stock,
+      inStock,
+      features,
+      description,
+      mainCategory,
+      subcategory,
+      brand,
+      colors,
+      sizes,
+      photoUrls
+    } = req.body;
 
+    // Input Validation
     if (
       !name?.trim() || !price || !stock || !features?.trim() ||
-      !description?.trim() || !category?.trim() || !photoUrl?.trim()
+      !description?.trim() || !mainCategory?.trim() || !subcategory?.trim() ||
+      !brand?.trim() || !photoUrls || !Array.isArray(photoUrls) || photoUrls.length === 0
     ) {
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -27,10 +42,15 @@ router.post('/', async (req, res) => {
       name: name.trim(),
       price: Number(price),
       stock: Number(stock),
+      inStock: Boolean(inStock),
       features: features.trim(),
       description: description.trim(),
-      category: category.trim(),
-      photoUrl: photoUrl.trim(),
+      mainCategory: mainCategory.trim(),
+      subcategory: subcategory.trim(),
+      brand: brand.trim(),
+      colors: colors || [],
+      sizes: sizes || [],
+      photoUrls: photoUrls.map(url => url.trim()),
     });
 
     await product.save();
@@ -68,11 +88,25 @@ router.delete('/:id', async (req, res) => {
 // ✅ UPDATE PRODUCT
 router.put('/:id', async (req, res) => {
   try {
-    const { name, price, stock, features, description, category, photoUrl } = req.body;
+    const {
+      name,
+      price,
+      stock,
+      inStock,
+      features,
+      description,
+      mainCategory,
+      subcategory,
+      brand,
+      colors,
+      sizes,
+      photoUrls
+    } = req.body;
 
     if (
       !name?.trim() || !price || !stock || !features?.trim() ||
-      !description?.trim() || !category?.trim() || !photoUrl?.trim()
+      !description?.trim() || !mainCategory?.trim() || !subcategory?.trim() ||
+      !brand?.trim() || !photoUrls || !Array.isArray(photoUrls) || photoUrls.length === 0
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -83,10 +117,15 @@ router.put('/:id', async (req, res) => {
         name: name.trim(),
         price: Number(price),
         stock: Number(stock),
+        inStock: Boolean(inStock),
         features: features.trim(),
         description: description.trim(),
-        category: category.trim(),
-        photoUrl: photoUrl.trim(),
+        mainCategory: mainCategory.trim(),
+        subcategory: subcategory.trim(),
+        brand: brand.trim(),
+        colors: colors || [],
+        sizes: sizes || [],
+        photoUrls: photoUrls.map(url => url.trim()),
       },
       { new: true }
     );
