@@ -15,7 +15,8 @@ const app = express();
 
 const allowedOrigins = [
   'https://ecommerce-electronics-0j4e.onrender.com', // old
-  'https://ecommerce-electronics-1.onrender.com'     // new frontend
+  'https://ecommerce-electronics-1.onrender.com',
+  'https://electromart-2vwj.onrender.com', // new frontend
 ];
 
 
