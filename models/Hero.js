@@ -1,10 +1,14 @@
 import mongoose from 'mongoose';
 
 const heroSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: String,
+  subtitle: String,
   description: String,
-  imageUrl: { type: String, required: true },
-  link: String
-}, { timestamps: true });
+  videoUrl: { type: String, required: true },
+  buttonText: String,
+  buttonLink: String,
+}, {
+  timestamps: true
+});
 
 export default mongoose.model('Hero', heroSchema);
