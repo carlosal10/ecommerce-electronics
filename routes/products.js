@@ -138,5 +138,25 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+// GET /api/products?popular=true&limit=8
+router.get('/', async (req, res) => {
+  try {
+    const { category, subcategory, popular, limit } = req.query;
+    const filter = {};
+
+    if (category) filter.category = category;
+    if (subcategory) filter.subcategory = subcategory;
+    if (popular === 'true') filter.isPopular = true;
+
+    const products = await Product.find(filter)
+      .sort({ rating: -1, reviewsCount: -1 })
+      .limit(Number(limit) || 20);
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
 
 export default router;
