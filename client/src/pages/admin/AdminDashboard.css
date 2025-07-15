@@ -9,8 +9,8 @@
 
 .admin-sidebar {
   width: 250px;
-  background: #111827;
-  color: #fff;
+  background: #e8eae5;
+  color: #00412e;
   padding: 2rem 1rem;
   flex-shrink: 0;
 }
@@ -19,7 +19,7 @@
   font-size: 1.2rem;
   margin-bottom: 2rem;
   text-align: center;
-  color: #38bdf8;
+  color: #96bf8a;
 }
 
 .admin-sidebar nav ul {
