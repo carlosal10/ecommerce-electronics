@@ -6,8 +6,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AdminEntryPage from './pages/admin/AdminEntryPage';
 
-import AdminProductList from './pages/AdminProductList';
-
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminOverview from './pages/admin/AdminOverview';
 import AdminOrders from './pages/admin/AdminOrders';
