@@ -1,0 +1,45 @@
+.admin-entry-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0e0e0e;
+  color: #fff;
+}
+
+.admin-sidebar {
+  width: 250px;
+  background: #111;
+  padding: 2rem 1rem;
+  border-right: 1px solid #333;
+}
+
+.admin-sidebar h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #00d0ff;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-sidebar li {
+  margin: 0.75rem 0;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.admin-sidebar li.active,
+.admin-sidebar li:hover {
+  background: #00d0ff33;
+  color: #00d0ff;
+}
+
+.admin-main-form {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
