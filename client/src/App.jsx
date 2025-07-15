@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Footer';
 
 import Login from './pages/Login';
-import Home from './pages/Home';
 
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOverview from './pages/AdminOverview';
@@ -17,11 +16,10 @@ const App = () => (
   <>
     <Routes>
       {/* Default route */}
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
 
       {/* Admin Routes under Dashboard */}
-      <Route path="/admin" element={<AdminDashboard />}>
+      <Route path="/" element={<AdminDashboard />}>
         <Route index element={<AdminOverview />} />
         <Route path="overview" element={<AdminOverview />} />
         <Route path="orders" element={<AdminOrders />} />

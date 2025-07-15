@@ -26,10 +26,12 @@
   list-style: none;
   padding: 0;
   margin: 0;
+
 }
 
 .admin-sidebar nav li {
   margin-bottom: 1rem;
+  color: black;
 }
 
 .admin-sidebar nav a {
