@@ -13,9 +13,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 
 
 const App = () => (
-  <CartProvider>
     <>
-      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -33,8 +31,7 @@ const App = () => (
         </Route>
       </Routes>
       <Footer />
-    </>
-  </CartProvider>
+  </>
 );
 
 export default App;
