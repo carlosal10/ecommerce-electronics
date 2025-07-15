@@ -36,12 +36,13 @@
 
 .admin-sidebar nav a {
   display: block;
-  color: #e5e7eb;
+  color: #111827; /* dark gray */
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   transition: background 0.2s ease;
 }
+
 
 .admin-sidebar nav li.active a,
 .admin-sidebar nav a:hover {
