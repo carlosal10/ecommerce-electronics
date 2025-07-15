@@ -1,3 +1,4 @@
+// routes/products.js
 import express from 'express';
 import Product from '../models/Product.js';
 import { v2 as cloudinary } from 'cloudinary';
@@ -26,7 +27,8 @@ router.post('/', async (req, res) => {
       brand,
       colors,
       sizes,
-      photoUrls
+      photoUrls,
+      isPopular, // ✅ included
     } = req.body;
 
     // Input Validation
@@ -51,6 +53,7 @@ router.post('/', async (req, res) => {
       colors: colors || [],
       sizes: sizes || [],
       photoUrls: photoUrls.map(url => url.trim()),
+      isPopular: Boolean(isPopular), // ✅ now saved
     });
 
     await product.save();
@@ -61,14 +64,24 @@ router.post('/', async (req, res) => {
   }
 });
 
-// ✅ READ ALL PRODUCTS
+// ✅ READ PRODUCTS WITH FILTERS
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const { category, subcategory, popular, limit } = req.query;
+    const filter = {};
+
+    if (category) filter.mainCategory = category;
+    if (subcategory) filter.subcategory = subcategory;
+    if (popular === 'true') filter.isPopular = true;
+
+    const products = await Product.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit) || 20);
+
     res.json(products);
   } catch (err) {
     console.error("Error fetching products:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 });
 
@@ -100,7 +113,8 @@ router.put('/:id', async (req, res) => {
       brand,
       colors,
       sizes,
-      photoUrls
+      photoUrls,
+      isPopular // ✅ make sure it's handled in updates too
     } = req.body;
 
     if (
@@ -126,6 +140,7 @@ router.put('/:id', async (req, res) => {
         colors: colors || [],
         sizes: sizes || [],
         photoUrls: photoUrls.map(url => url.trim()),
+        isPopular: Boolean(isPopular), // ✅ update support
       },
       { new: true }
     );
@@ -138,25 +153,5 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-// GET /api/products?popular=true&limit=8
-router.get('/', async (req, res) => {
-  try {
-    const { category, subcategory, popular, limit } = req.query;
-    const filter = {};
-
-    if (category) filter.category = category;
-    if (subcategory) filter.subcategory = subcategory;
-    if (popular === 'true') filter.isPopular = true;
-
-    const products = await Product.find(filter)
-      .sort({ rating: -1, reviewsCount: -1 })
-      .limit(Number(limit) || 20);
-
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch products' });
-  }
-});
-
 
 export default router;

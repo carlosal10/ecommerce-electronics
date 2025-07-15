@@ -1,3 +1,4 @@
+// src/pages/AdminEntryPage.jsx
 import React, { useState } from 'react';
 import {
   FiShoppingCart,
@@ -10,18 +11,36 @@ import AddProductForm from '../components/forms/AddProductForm';
 import AddCategoryForm from '../components/forms/AddCategoryForm';
 import AddBannerForm from '../components/forms/AddBannerForm';
 import AddBrandForm from '../components/forms/AddBrandForm';
+import { toast } from 'react-toastify';
 
 import './AdminEntryPage.css';
 
 const AdminEntryPage = () => {
   const [activeForm, setActiveForm] = useState('product');
 
-  const handleProductSubmit = (payload) => {
+  const handleProductSubmit = async (payload) => {
+    console.log('🚀 Submitting Product:', payload);
+
     try {
-      console.log('🚀 Submitting Product:', payload);
-      // TODO: send to your backend via fetch or axios
+      const res = await fetch('https://ecommerce-electronics-0j4e.onrender.com/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Server responded with ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      console.log('✅ Product added:', data);
+      toast.success('Product added successfully!');
     } catch (err) {
       console.error('❌ Failed to submit product:', err);
+      toast.error('Failed to add product');
     }
   };
 
@@ -33,22 +52,17 @@ const AdminEntryPage = () => {
   ];
 
   const renderForm = () => {
-    try {
-      switch (activeForm) {
-        case 'product':
-          return <AddProductForm onSubmit={handleProductSubmit} />;
-        case 'category':
-          return <AddCategoryForm />;
-        case 'banner':
-          return <AddBannerForm />;
-        case 'brand':
-          return <AddBrandForm />;
-        default:
-          return <p>Select a form to continue</p>;
-      }
-    } catch (err) {
-      console.error('Render error:', err);
-      return <p style={{ color: 'red' }}>Something went wrong rendering the form.</p>;
+    switch (activeForm) {
+      case 'product':
+        return <AddProductForm onSubmit={handleProductSubmit} />;
+      case 'category':
+        return <AddCategoryForm />;
+      case 'banner':
+        return <AddBannerForm />;
+      case 'brand':
+        return <AddBrandForm />;
+      default:
+        return <p>Select a form to continue</p>;
     }
   };
 
