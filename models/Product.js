@@ -16,8 +16,14 @@ const productSchema = new mongoose.Schema({
 
   features: { type: String },
   description: { type: String },
+  isPopular: {
+  type: Boolean,
+  default: false
+},
 
   photoUrls: [String],      // array of Cloudinary URLs
 }, { timestamps: true });
+
+
 
 export default mongoose.model("Product", productSchema);

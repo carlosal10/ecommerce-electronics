@@ -14,6 +14,7 @@ const ProductForm = ({ onSubmit }) => {
     colors: '',
     sizes: '',
     photoUrls: [],
+    isPopular: false, // ✅ new
   });
 
   const [categories, setCategories] = useState([]);
@@ -108,10 +109,26 @@ const ProductForm = ({ onSubmit }) => {
         <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} required />
         <input name="stock" type="number" placeholder="Stock" value={form.stock} onChange={handleChange} required />
 
-        <select value={form.inStock} onChange={e => setForm(prev => ({ ...prev, inStock: e.target.value === 'true' }))}>
+        <select
+          value={form.inStock}
+          onChange={e => setForm(prev => ({ ...prev, inStock: e.target.value === 'true' }))}
+        >
           <option value="true">In Stock</option>
           <option value="false">Out of Stock</option>
         </select>
+
+        {/* ✅ Add Popular Toggle */}
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            name="isPopular"
+            checked={form.isPopular}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, isPopular: e.target.checked }))
+            }
+          />
+          Mark as Popular Product
+        </label>
 
         <input name="colors" placeholder="Colors (comma separated)" value={form.colors} onChange={handleChange} />
         <input name="sizes" placeholder="Sizes (comma separated)" value={form.sizes} onChange={handleChange} />
