@@ -33,16 +33,22 @@ const AddBrandForm = () => {
       return toast.error('Please fill all fields');
     }
 
+    const selectedCategory = categories.find(cat => cat.name === mainCategory);
+    if (!selectedCategory) return toast.error('Selected category not found');
+
+    const categoryId = selectedCategory._id;
+
     setLoading(true);
     try {
-      const res = await fetch(`https://ecommerce-electronics-0j4e.onrender.com/api/categories/${mainCategory}/add-brand`, {
-        method: 'PUT',
+      const res = await fetch(`https://ecommerce-electronics-0j4e.onrender.com/api/categories/${categoryId}/subcategory/${subcategory}/brand`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subcategory, brand: brandName })
+        body: JSON.stringify({ brand: brandName }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not add brand');
+
       toast.success('Brand added successfully');
       setBrandName('');
     } catch (err) {
@@ -63,7 +69,7 @@ const AddBrandForm = () => {
         }}>
           <option value="">Main Category</option>
           {categories.map(cat => (
-            <option key={cat.name} value={cat.name}>{cat.name}</option>
+            <option key={cat._id} value={cat.name}>{cat.name}</option>
           ))}
         </select>
 
