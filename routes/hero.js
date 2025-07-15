@@ -1,5 +1,5 @@
 import express from 'express';
-import Hero from '../models/hero.js'; // Your Mongoose model
+import Hero from '../models/Hero.js'; // Your Mongoose model
 
 const router = express.Router();
 
