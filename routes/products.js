@@ -1,11 +1,11 @@
-// routes/products.js
+// routes/productRoutes.js
 import express from 'express';
 import Product from '../models/Product.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 const router = express.Router();
 
-// Cloudinary Configuration
+// Cloudinary Config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -16,28 +16,18 @@ cloudinary.config({
 router.post('/', async (req, res) => {
   try {
     const {
-      name,
-      price,
-      stock,
-      inStock,
-      features,
-      description,
-      mainCategory,
-      subcategory,
-      brand,
-      colors,
-      sizes,
-      photoUrls,
-      isPopular, // ✅ included
+      name, price, stock, inStock, features, description,
+      mainCategory, subcategory, brand, colors, sizes,
+      photoUrls, isPopular
     } = req.body;
 
-    // Input Validation
+    // Validation
     if (
-      !name?.trim() || !price || !stock || !features?.trim() ||
-      !description?.trim() || !mainCategory?.trim() || !subcategory?.trim() ||
-      !brand?.trim() || !photoUrls || !Array.isArray(photoUrls) || photoUrls.length === 0
+      !name || !price || !stock || !features || !description ||
+      !mainCategory || !subcategory || !brand ||
+      !Array.isArray(photoUrls) || photoUrls.length === 0
     ) {
-      return res.status(400).json({ error: "All fields are required." });
+      return res.status(400).json({ error: 'All fields are required.' });
     }
 
     const product = new Product({
@@ -53,18 +43,18 @@ router.post('/', async (req, res) => {
       colors: colors || [],
       sizes: sizes || [],
       photoUrls: photoUrls.map(url => url.trim()),
-      isPopular: Boolean(isPopular), // ✅ now saved
+      isPopular: Boolean(isPopular)
     });
 
     await product.save();
-    res.status(201).json({ message: "Product created successfully", product });
-  } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ error: error.message || "Internal server error" });
+    res.status(201).json({ message: 'Product created successfully', product });
+  } catch (err) {
+    console.error('Error creating product:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
 });
 
-// ✅ READ PRODUCTS WITH FILTERS
+// ✅ READ PRODUCTS (all / filtered)
 router.get('/', async (req, res) => {
   try {
     const { category, subcategory, popular, limit } = req.query;
@@ -80,52 +70,32 @@ router.get('/', async (req, res) => {
 
     res.json(products);
   } catch (err) {
-    console.error("Error fetching products:", err);
-    res.status(500).json({ error: "Failed to fetch products" });
+    console.error('Error fetching products:', err);
+    res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
-// ✅ DELETE PRODUCT
+// ✅ DELETE
 router.delete('/:id', async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) return res.status(404).json({ error: "Product not found" });
-
-    res.json({ message: "Product deleted successfully" });
+    const deleted = await Product.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Product not found' });
+    res.json({ message: 'Product deleted' });
   } catch (err) {
-    console.error("Error deleting product:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 
-// ✅ UPDATE PRODUCT
+// ✅ UPDATE
 router.put('/:id', async (req, res) => {
   try {
     const {
-      name,
-      price,
-      stock,
-      inStock,
-      features,
-      description,
-      mainCategory,
-      subcategory,
-      brand,
-      colors,
-      sizes,
-      photoUrls,
-      isPopular // ✅ make sure it's handled in updates too
+      name, price, stock, inStock, features, description,
+      mainCategory, subcategory, brand, colors, sizes,
+      photoUrls, isPopular
     } = req.body;
 
-    if (
-      !name?.trim() || !price || !stock || !features?.trim() ||
-      !description?.trim() || !mainCategory?.trim() || !subcategory?.trim() ||
-      !brand?.trim() || !photoUrls || !Array.isArray(photoUrls) || photoUrls.length === 0
-    ) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(
+    const updated = await Product.findByIdAndUpdate(
       req.params.id,
       {
         name: name.trim(),
@@ -140,17 +110,15 @@ router.put('/:id', async (req, res) => {
         colors: colors || [],
         sizes: sizes || [],
         photoUrls: photoUrls.map(url => url.trim()),
-        isPopular: Boolean(isPopular), // ✅ update support
+        isPopular: Boolean(isPopular)
       },
       { new: true }
     );
 
-    if (!updatedProduct) return res.status(404).json({ error: "Product not found" });
-
-    res.json({ message: "Product updated successfully", product: updatedProduct });
+    if (!updated) return res.status(404).json({ error: 'Product not found' });
+    res.json({ message: 'Product updated', product: updated });
   } catch (err) {
-    console.error("Error updating product:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: 'Failed to update product' });
   }
 });
 
