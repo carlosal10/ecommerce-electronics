@@ -25,6 +25,7 @@ const AdminEntryPage = () => {
   ];
 
   const renderForm = () => {
+  try {
     switch (activeForm) {
       case 'product':
         return <AddProductForm />;
@@ -37,7 +38,12 @@ const AdminEntryPage = () => {
       default:
         return null;
     }
-  };
+  } catch (err) {
+    console.error('Render error:', err);
+    return <p style={{ color: 'red' }}>Something went wrong in the form.</p>;
+  }
+};
+
 
   return (
     <div className="admin-entry-container">
