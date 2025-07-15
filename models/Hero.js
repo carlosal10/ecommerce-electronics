@@ -4,7 +4,7 @@ const heroSchema = new mongoose.Schema({
   title: String,
   subtitle: String,
   description: String,
-  videoUrl: { type: String, required: true },
+  imageUrl: { type: String, required: true }, // ⬅️ Added to store the image URL
   buttonText: String,
   buttonLink: String,
 }, {

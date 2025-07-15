@@ -1,8 +1,8 @@
 import express from 'express';
-import Hero from '../models/Hero.js'; // Your Mongoose model
+import Hero from '../models/Hero.js';
 import { v2 as cloudinary } from 'cloudinary';
-const router = express.Router();
 
+const router = express.Router();
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -11,16 +11,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Create new hero banner
+// ✅ Create new hero banner (expects imageUrl)
 router.post('/', async (req, res) => {
   try {
-    const { title, subtitle, description, videoUrl, buttonText, buttonLink } = req.body;
+    const { title, subtitle, description, imageUrl, buttonText, buttonLink } = req.body;
 
-    if (!title || !videoUrl) {
-      return res.status(400).json({ error: 'Title and video URL are required' });
+    if (!title || !imageUrl) {
+      return res.status(400).json({ error: 'Title and imageUrl are required' });
     }
 
-    const banner = new Hero({ title, subtitle, description, videoUrl, buttonText, buttonLink });
+    const banner = new Hero({
+      title,
+      subtitle,
+      description,
+      imageUrl,
+      buttonText,
+      buttonLink
+    });
+
     await banner.save();
 
     res.status(201).json({ message: 'Hero banner created', banner });
@@ -29,7 +37,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// ✅ Get all hero banners (for slideshow)
+// ✅ Get all hero banners
 router.get('/', async (req, res) => {
   try {
     const banners = await Hero.find().sort({ createdAt: -1 });
