@@ -1,0 +1,30 @@
+/* src/pages/admin/Home.css */
+.admin-home {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.home-links a {
+  background: #222;
+  color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.home-links a:hover {
+  background: #ff4c4c;
+  transform: translateY(-2px);
+}
