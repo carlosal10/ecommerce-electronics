@@ -16,9 +16,7 @@ const App = () => (
     <>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
 
         {/* Admin Dashboard with nested routes */}
         <Route path="/admin" element={<AdminDashboard />}>
