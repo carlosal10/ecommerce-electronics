@@ -1,7 +1,6 @@
 // src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -25,9 +24,6 @@ const App = () => (
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        {/* Admin Product List (outside nested admin) */}
-        <Route path="/admin/products" element={<AdminProductList />} />
-        <Route path="/admin/edit-product/:id" element={<EditProduct />} />
 
         {/* Admin Dashboard with nested routes */}
         <Route path="/admin" element={<AdminDashboard />}>
