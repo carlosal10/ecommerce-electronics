@@ -1,47 +1,60 @@
 /* src/pages/admin/AdminEntryPage.css */
-.admin-entry-page {
-  display: flex;
-  min-height: 100vh;
-  background: #0d0f14;
-  color: #f1f1f1;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
-.admin-sidebar {
-  width: 240px;
-  background: #11131a;
-  padding: 2rem 1rem;
-  border-right: 1px solid #222;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-}
-
-.admin-sidebar h2 {
-  font-size: 1.4rem;
-  color: #40f8ff;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 0.5rem;
-}
-
-.admin-sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.admin-sidebar li {
-  padding: 0.8rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.admin-sidebar li:hover {
-  background: #20232a;
-  color: #40f8ff;
-}
-
-.admin-main {
-  flex: 1;
+.entry-container {
+  max-width: 1000px;
+  margin: 2rem auto;
   padding: 2rem;
-  background: #1a1d23;
-  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.entry-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.entry-tabs button {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: #f1f1f1;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.entry-tabs button:hover {
+  background: #e0e0e0;
+}
+
+.entry-tabs button.active {
+  background-color: #1e88e5;
+  color: white;
+  font-weight: 600;
+}
+
+.entry-form {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .entry-container {
+    padding: 1.2rem;
+  }
+
+  .entry-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .entry-tabs button {
+    width: 100%;
+  }
 }

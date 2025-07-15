@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Footer';
@@ -15,12 +14,9 @@ import AdminEntryPage from './pages/admin/AdminEntryPage';
 const App = () => (
   <>
     <Routes>
-      <Route path="/" element={<Navigate to="/admin" replace />} /> {/* 👈 Fixes blank page */}
-
-      {/* Public Route */}
+      <Route path="/" element={<Navigate to="/admin" replace />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Admin routes */}
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<AdminOverview />} />
         <Route path="overview" element={<AdminOverview />} />
@@ -30,7 +26,7 @@ const App = () => (
         <Route path="data-entry" element={<AdminEntryPage />} />
       </Route>
 
-      {/* Catch-all fallback */}
+      {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
 
