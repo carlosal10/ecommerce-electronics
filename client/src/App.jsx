@@ -3,7 +3,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Footer from './components/Footer';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
 import AdminEntryPage from './pages/admin/AdminEntryPage';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
