@@ -1,4 +1,3 @@
-// src/pages/admin/AdminEntryPage.jsx
 import React, { useState } from 'react';
 import {
   FiShoppingCart,
@@ -17,6 +16,15 @@ import './AdminEntryPage.css';
 const AdminEntryPage = () => {
   const [activeForm, setActiveForm] = useState('product');
 
+  const handleProductSubmit = (payload) => {
+    try {
+      console.log('🚀 Submitting Product:', payload);
+      // TODO: send to your backend via fetch or axios
+    } catch (err) {
+      console.error('❌ Failed to submit product:', err);
+    }
+  };
+
   const navItems = [
     { key: 'product', label: 'Add Product', icon: <FiShoppingCart /> },
     { key: 'category', label: 'Add Category', icon: <FiFolderPlus /> },
@@ -25,25 +33,24 @@ const AdminEntryPage = () => {
   ];
 
   const renderForm = () => {
-  try {
-    switch (activeForm) {
-      case 'product':
-        return <AddProductForm />;
-      case 'category':
-        return <AddCategoryForm />;
-      case 'banner':
-        return <AddBannerForm />;
-      case 'brand':
-        return <AddBrandForm />;
-      default:
-        return null;
+    try {
+      switch (activeForm) {
+        case 'product':
+          return <AddProductForm onSubmit={handleProductSubmit} />;
+        case 'category':
+          return <AddCategoryForm />;
+        case 'banner':
+          return <AddBannerForm />;
+        case 'brand':
+          return <AddBrandForm />;
+        default:
+          return <p>Select a form to continue</p>;
+      }
+    } catch (err) {
+      console.error('Render error:', err);
+      return <p style={{ color: 'red' }}>Something went wrong rendering the form.</p>;
     }
-  } catch (err) {
-    console.error('Render error:', err);
-    return <p style={{ color: 'red' }}>Something went wrong in the form.</p>;
-  }
-};
-
+  };
 
   return (
     <div className="admin-entry-container">
@@ -60,7 +67,9 @@ const AdminEntryPage = () => {
         ))}
       </nav>
 
-      <div className="admin-entry-content">{renderForm()}</div>
+      <div className="admin-entry-content">
+        {renderForm()}
+      </div>
     </div>
   );
 };
