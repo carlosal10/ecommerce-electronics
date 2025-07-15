@@ -17,6 +17,9 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   justify-content: center;
+  background-color: darkgray;
+  color: black;
+  width: fit-content;
 }
 
 .entry-tabs button {
