@@ -37,10 +37,10 @@ const AdminEntryPage = () => {
 
       const data = await res.json();
       console.log('✅ Product added:', data);
-      toast.success('Product added successfully!');
+      toast.success('✅ Product added successfully!');
     } catch (err) {
       console.error('❌ Failed to submit product:', err);
-      toast.error('Failed to add product');
+      toast.error(`❌ ${err.message || 'Failed to add product'}`);
     }
   };
 
@@ -62,7 +62,7 @@ const AdminEntryPage = () => {
       case 'brand':
         return <AddBrandForm />;
       default:
-        return <p>Select a form to continue</p>;
+        return <p style={{ padding: '1rem' }}>Select a form to continue</p>;
     }
   };
 
