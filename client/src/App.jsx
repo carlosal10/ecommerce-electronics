@@ -1,22 +1,26 @@
+// src/App.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Footer';
 
 import Login from './pages/Login';
+import Home from './pages/Home';
 
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminOverview from './pages/admin/AdminOverview';
-import AdminOrders from './pages/admin/AdminOrders';
-import AdminProducts from './pages/admin/AdminProducts';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminEntryPage from './pages/admin/AdminEntryPage';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminOverview from './pages/AdminOverview';
+import AdminOrders from './pages/AdminOrders';
+import AdminProducts from './pages/AdminProducts';
+import AdminUsers from './pages/AdminUsers';
+import AdminEntryPage from './pages/AdminEntryPage';
 
 const App = () => (
   <>
     <Routes>
-      <Route path="/" element={<Navigate to="/admin" replace />} />
+      {/* Default route */}
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
 
+      {/* Admin Routes under Dashboard */}
       <Route path="/admin" element={<AdminDashboard />}>
         <Route index element={<AdminOverview />} />
         <Route path="overview" element={<AdminOverview />} />
@@ -26,7 +30,7 @@ const App = () => (
         <Route path="data-entry" element={<AdminEntryPage />} />
       </Route>
 
-      {/* Catch-all redirect */}
+      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
 

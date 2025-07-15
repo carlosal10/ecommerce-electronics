@@ -7,10 +7,10 @@ import {
   FiTag,
 } from 'react-icons/fi';
 
-import AddProductForm from '../../components/forms/AddProductForm';
-import AddCategoryForm from '../../components/forms/AddCategoryForm';
-import AddBannerForm from '../../components/forms/AddBannerForm';
-import AddBrandForm from '../../components/forms/AddBrandForm';
+import AddProductForm from '../components/forms/AddProductForm';
+import AddCategoryForm from '../components/forms/AddCategoryForm';
+import AddBannerForm from '../components/forms/AddBannerForm';
+import AddBrandForm from '../components/forms/AddBrandForm';
 
 import './AdminEntryPage.css';
 
