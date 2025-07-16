@@ -53,9 +53,11 @@ app.get('/test', (req, res) => {
   res.send('Server is working');
 });
 
-app.get('*', (req, res) => {
+// Catch-all: Serve React for non-API routes
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
+
 
 
 // MongoDB connection
