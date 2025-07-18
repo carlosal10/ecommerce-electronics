@@ -10,6 +10,7 @@ import productRoutes from './routes/products.js';
 import ordersRoutes from './routes/orders.js';
 import authRoutes from './routes/auth.js';
 import heroRoutes from './routes/hero.js';
+import showcaseRoutes from './routes/showcase.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/orders', ordersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', mpesaRoutes);
 app.use('/api/hero', heroRoutes);
+app.use('/api/showcase', showcaseRoutes);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
