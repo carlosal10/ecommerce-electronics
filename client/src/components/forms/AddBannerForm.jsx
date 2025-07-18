@@ -7,9 +7,10 @@ const AddBannerForm = () => {
     title: '',
     subtitle: '',
     description: '',
-    imageUrl: '', // ← renamed from posterUrl
+    imageUrl: '',
     buttonText: '',
-    buttonLink: ''
+    buttonLink: '',
+    type: 'hero' // default to 'hero'
   });
 
   const [uploading, setUploading] = useState(false);
@@ -71,6 +72,7 @@ const AddBannerForm = () => {
         imageUrl: '',
         buttonText: '',
         buttonLink: '',
+        type: 'hero'
       });
     } catch (err) {
       toast.error(err.message);
@@ -79,7 +81,7 @@ const AddBannerForm = () => {
 
   return (
     <form className="admin-form" onSubmit={handleSubmit}>
-      <h3>Add Hero Banner</h3>
+      <h3>Add Banner</h3>
 
       <input
         name="title"
@@ -117,6 +119,12 @@ const AddBannerForm = () => {
         value={form.buttonLink}
         onChange={handleChange}
       />
+      <select name="type" value={form.type} onChange={handleChange}>
+        <option value="hero">Hero</option>
+        <option value="seasonal">Seasonal</option>
+        <option value="promo">Promo</option>
+        <option value="bestSelling">Best Selling</option>
+      </select>
 
       <button type="submit" className="btn-red" disabled={uploading}>
         {uploading ? 'Uploading...' : 'Submit Banner'}

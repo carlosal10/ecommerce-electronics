@@ -1,4 +1,3 @@
-// models/Product.js
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
@@ -16,14 +15,11 @@ const productSchema = new mongoose.Schema({
 
   features: { type: String },
   description: { type: String },
-  isPopular: {
-  type: Boolean,
-  default: false
-},
 
-  photoUrls: [String],      // array of Cloudinary URLs
+  isPopular: { type: Boolean, default: false },
+  isSeasonal: { type: Boolean, default: false }, // ✅ NEW FIELD for Seasonal / Best Choice
+
+  photoUrls: [String],      // Cloudinary image URLs
 }, { timestamps: true });
-
-
 
 export default mongoose.model("Product", productSchema);

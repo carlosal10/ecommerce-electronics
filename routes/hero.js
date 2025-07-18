@@ -1,5 +1,5 @@
 import express from 'express';
-import Hero from '../models/Hero.js';
+import Hero from '../models/Banner.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 const router = express.Router();
@@ -11,10 +11,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Create new hero banner (expects imageUrl)
+// ✅ Create a new banner (supports different types)
 router.post('/', async (req, res) => {
   try {
-    const { title, subtitle, description, imageUrl, buttonText, buttonLink } = req.body;
+    const {
+      title,
+      subtitle,
+      description,
+      imageUrl,
+      buttonText,
+      buttonLink,
+      type // <- NEW
+    } = req.body;
 
     if (!title || !imageUrl) {
       return res.status(400).json({ error: 'Title and imageUrl are required' });
@@ -26,28 +34,32 @@ router.post('/', async (req, res) => {
       description,
       imageUrl,
       buttonText,
-      buttonLink
+      buttonLink,
+      type: type || 'hero' // default to 'hero' if not provided
     });
 
     await banner.save();
 
-    res.status(201).json({ message: 'Hero banner created', banner });
+    res.status(201).json({ message: 'Banner created', banner });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create hero banner' });
+    res.status(500).json({ error: 'Failed to create banner' });
   }
 });
 
-// ✅ Get all hero banners
+// ✅ Get all banners (optional filter by type)
 router.get('/', async (req, res) => {
   try {
-    const banners = await Hero.find().sort({ createdAt: -1 });
+    const { type } = req.query;
+    const filter = type ? { type } : {};
+    const banners = await Hero.find(filter).sort({ createdAt: -1 });
+
     res.status(200).json(banners);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch hero banners' });
+    res.status(500).json({ error: 'Failed to fetch banners' });
   }
 });
 
-// ✅ Get single hero banner by ID
+// ✅ Get single banner by ID
 router.get('/:id', async (req, res) => {
   try {
     const banner = await Hero.findById(req.params.id);
@@ -65,7 +77,7 @@ router.put('/:id', async (req, res) => {
     const updated = await Hero.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ error: 'Banner not found' });
 
-    res.json({ message: 'Hero banner updated', banner: updated });
+    res.json({ message: 'Banner updated', banner: updated });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update banner' });
   }

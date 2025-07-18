@@ -1,4 +1,3 @@
-// src/components/admin/forms/ProductForm.jsx
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import './FormStyles.css'; // Shared styling for all forms
@@ -14,7 +13,8 @@ const ProductForm = ({ onSubmit }) => {
     colors: '',
     sizes: '',
     photoUrls: [],
-    isPopular: false, // ✅ new
+    isPopular: false, // ✅ Popular flag
+    highlightTag: '', // ✅ New: for "seasonal-offer", "best-choice", etc.
   });
 
   const [categories, setCategories] = useState([]);
@@ -117,7 +117,7 @@ const ProductForm = ({ onSubmit }) => {
           <option value="false">Out of Stock</option>
         </select>
 
-        {/* ✅ Add Popular Toggle */}
+        {/* ✅ Popular product checkbox */}
         <label className="checkbox-label">
           <input
             type="checkbox"
@@ -129,6 +129,19 @@ const ProductForm = ({ onSubmit }) => {
           />
           Mark as Popular Product
         </label>
+
+        {/* ✅ Highlight Tag Selector */}
+        <select
+          name="highlightTag"
+          value={form.highlightTag}
+          onChange={handleChange}
+          className="input-field"
+        >
+          <option value="">No Highlight</option>
+          <option value="seasonal-offer">Seasonal Offer</option>
+          <option value="best-choice">Best Choice</option>
+          <option value="flash-sale">Flash Sale</option>
+        </select>
 
         <input name="colors" placeholder="Colors (comma separated)" value={form.colors} onChange={handleChange} />
         <input name="sizes" placeholder="Sizes (comma separated)" value={form.sizes} onChange={handleChange} />

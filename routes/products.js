@@ -1,4 +1,3 @@
-// routes/productRoutes.js
 import express from 'express';
 import Product from '../models/Product.js';
 import { v2 as cloudinary } from 'cloudinary';
@@ -18,7 +17,7 @@ router.post('/', async (req, res) => {
     const {
       name, price, stock, inStock, features, description,
       mainCategory, subcategory, brand, colors, sizes,
-      photoUrls, isPopular
+      photoUrls, isPopular, seasonalOffer, bestChoice
     } = req.body;
 
     // Validation
@@ -43,7 +42,9 @@ router.post('/', async (req, res) => {
       colors: colors || [],
       sizes: sizes || [],
       photoUrls: photoUrls.map(url => url.trim()),
-      isPopular: Boolean(isPopular)
+      isPopular: Boolean(isPopular),
+      seasonalOffer: Boolean(seasonalOffer),
+      bestChoice: Boolean(bestChoice)
     });
 
     await product.save();
@@ -57,12 +58,14 @@ router.post('/', async (req, res) => {
 // ✅ READ PRODUCTS (all / filtered)
 router.get('/', async (req, res) => {
   try {
-    const { category, subcategory, popular, limit } = req.query;
+    const { category, subcategory, popular, seasonal, best, limit } = req.query;
     const filter = {};
 
     if (category) filter.mainCategory = category;
     if (subcategory) filter.subcategory = subcategory;
     if (popular === 'true') filter.isPopular = true;
+    if (seasonal === 'true') filter.seasonalOffer = true;
+    if (best === 'true') filter.bestChoice = true;
 
     const products = await Product.find(filter)
       .sort({ createdAt: -1 })
@@ -92,7 +95,7 @@ router.put('/:id', async (req, res) => {
     const {
       name, price, stock, inStock, features, description,
       mainCategory, subcategory, brand, colors, sizes,
-      photoUrls, isPopular
+      photoUrls, isPopular, seasonalOffer, bestChoice
     } = req.body;
 
     const updated = await Product.findByIdAndUpdate(
@@ -110,7 +113,9 @@ router.put('/:id', async (req, res) => {
         colors: colors || [],
         sizes: sizes || [],
         photoUrls: photoUrls.map(url => url.trim()),
-        isPopular: Boolean(isPopular)
+        isPopular: Boolean(isPopular),
+        seasonalOffer: Boolean(seasonalOffer),
+        bestChoice: Boolean(bestChoice)
       },
       { new: true }
     );
@@ -121,6 +126,7 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update product' });
   }
 });
+
 // ✅ GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -131,6 +137,5 @@ router.get('/:id', async (req, res) => {
     res.status(400).json({ error: 'Invalid product ID' });
   }
 });
-
 
 export default router;
